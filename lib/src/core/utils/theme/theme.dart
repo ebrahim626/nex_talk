@@ -32,6 +32,7 @@ const _borderColor = Color(0xFF2a2d35);
 const greyLightColor = Color(0xff6F6C6A);
 const ratingBackgroundColor = Color(0xff9aa596);
 const stockColor = _borderColor;
+const containerColor = _borderColor;
 const hintTextColor = Color(0xff6b7280);
 const successColor = Color(0xff34C759);
 const warningColor = Color(0xffff3b30);
