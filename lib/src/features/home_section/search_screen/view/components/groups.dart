@@ -7,8 +7,8 @@ import '../../../../../core/utils/theme/theme.dart';
 import '../../../../common/view/button/app_button.dart';
 import '../../../../common/view/textfield/custom_textfield_with_label.dart';
 
-class SignInForm extends StatelessWidget {
-  const SignInForm({super.key});
+class Groups extends StatelessWidget {
+  const Groups({super.key});
 
   @override
   Widget build(BuildContext context) {

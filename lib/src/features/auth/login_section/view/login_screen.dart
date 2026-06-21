@@ -34,9 +34,7 @@ class LoginScreen extends StatelessWidget {
               ),
               36.ph,
               // Tab switcher pill
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
+               Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
@@ -62,20 +60,16 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
               30.ph,
 
               // Forms
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      SignInForm(),
-                      RegisterForm(),
-                    ],
-                  ),
+                child: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    SignInForm(),
+                    RegisterForm(),
+                  ],
                 ),
               ),
             ],
