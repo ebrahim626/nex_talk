@@ -19,6 +19,7 @@ const _bodyTextColor = Color(0xff6b7280);
 const bodyTextColor = _bodyTextColor;
 const containerTextColor = Colors.white;
 const logoContainerColor = Color(0xff16181c);
+const bottomSheetColor = logoContainerColor;
 final _shadowColor = _bodyTextColor.withValues(alpha: 0.3);
 final _cardBackgroundColor = const Color(0xff1e2128);
 final containerColor2 = _cardBackgroundColor;

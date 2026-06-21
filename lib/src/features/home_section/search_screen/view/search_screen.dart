@@ -3,6 +3,7 @@ import 'package:next_talk/src/core/config/constant/assets_path.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
+import 'package:next_talk/src/features/home_section/add_contact/view/add_contact_bottom_sheet.dart';
 import 'package:next_talk/src/features/home_section/search_screen/view/components/direct_messages.dart';
 import 'package:next_talk/src/features/home_section/search_screen/view/components/groups.dart';
 import '../../../../core/utils/extensions/gap.dart';
@@ -19,8 +20,12 @@ class SearchScreen extends StatelessWidget {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 85.0),
         child: FloatingActionButton(
-          onPressed: () {},
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+          onPressed: () {
+            AddContactBottomSheet.show(context);
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(99),
+          ),
           child: Icon(Icons.add),
         ),
       ),
