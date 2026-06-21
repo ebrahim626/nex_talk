@@ -22,9 +22,8 @@ class LoginScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              const SizedBox(height: 150),  // manual top spacing instead of center
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -71,6 +70,7 @@ class LoginScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
                       SignInForm(),
                       RegisterForm(),

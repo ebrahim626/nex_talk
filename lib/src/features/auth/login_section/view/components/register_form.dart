@@ -13,11 +13,23 @@ class RegisterForm extends StatelessWidget {
     return Column(
       children: [
         CustomTextFieldWithLabel(
-          label: "Register",
+          label: "Email",
           hintText: "you@exmaple.com",
           isFillColor: true,
           leading: Icon(
             Icons.email_outlined,
+            color: bodyTextColor,
+            size: 24,
+          ),
+          controller: TextEditingController(),
+        ),
+        12.ph,
+        CustomTextFieldWithLabel(
+          label: "Username",
+          hintText: "Enter username",
+          isFillColor: true,
+          leading: Icon(
+            Icons.account_circle_outlined,
             color: bodyTextColor,
             size: 24,
           ),
@@ -34,10 +46,8 @@ class RegisterForm extends StatelessWidget {
         30.ph,
         AppButton(
           onPressed: () {},
-          child: Text("Sign In", style: context.text.titleMedium),
+          child: Text("Create Account", style: context.text.titleMedium),
         ),
-        20.ph,
-        Text("Forgot Password?", style: context.text.titleSmall),
       ],
     );
   }

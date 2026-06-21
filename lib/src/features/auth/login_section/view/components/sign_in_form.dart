@@ -17,11 +17,7 @@ class SignInForm extends StatelessWidget {
           label: "Email",
           hintText: "you@exmaple.com",
           isFillColor: true,
-          leading: Icon(
-            Icons.email_outlined,
-            color: bodyTextColor,
-            size: 24,
-          ),
+          leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
           controller: TextEditingController(),
         ),
         12.ph,
@@ -38,7 +34,13 @@ class SignInForm extends StatelessWidget {
           child: Text("Sign In", style: context.text.titleMedium),
         ),
         20.ph,
-        Text("Forgot Password?", style: context.text.titleSmall),
+        InkWell(
+          onTap: () {},
+          child: Text(
+            "Forgot Password?",
+            style: context.text.titleSmall?.copyWith(color: primaryColor),
+          ),
+        ),
       ],
     );
   }
