@@ -110,6 +110,7 @@ class _CustomTextFieldWithLabelState extends State<CustomTextFieldWithLabel> {
                     widget.labelStyle ??
                     context.text.titleSmall?.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: bodyTextColor
                     ),
               ),
               if (widget.optional == true)
@@ -182,7 +183,7 @@ class _CustomTextFieldWithLabelState extends State<CustomTextFieldWithLabel> {
                 horizontal: 8.w,
               ),
               fillColor: widget.isFillColor
-                  ? widget.fillColor ?? const Color(0xffF4F4F4)
+                  ? widget.fillColor ?? containerColor
                   : Colors.transparent,
               filled: widget.isFillColor,
               // Add these border properties:

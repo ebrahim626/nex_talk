@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:next_talk/src/core/config/constant/assets_path.dart';
+import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
+import 'package:next_talk/src/features/auth/login_section/view/components/register_form.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
-
 import '../../../../core/utils/extensions/gap.dart';
+import 'components/sign_in_form.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -14,61 +17,69 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       backGroundColor: backgroundColor,
-      body: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(AssetsPath.logo, width: 45, height: 45),
-                15.pw,
-                Text(
-                  "NexTalk",
-                  style: TextStyle(fontSize: 24, color: Colors.white),
-                ),
-              ],
-            ),
-            36.ph,
-            Container(
-              padding: EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: containerColor,
-              ),
-              child: Row(
+      body: DefaultTabController(
+        length: 2,
+        child: Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsetsGeometry.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: primaryColor,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Sign In",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        "Register",
-                        style: TextStyle(fontSize: 18, color: hintTextColor),
-                      ),
-                    ),
-                  ),
+                  Image.asset(AssetsPath.logo, width: 45, height: 45),
+                  15.pw,
+                  Text("NexTalk", style: context.text.titleLarge),
                 ],
               ),
-            ),
-            30.ph,
+              36.ph,
+              // Tab switcher pill
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: containerColor,
+                  ),
+                  child: TabBar(
+                    padding: EdgeInsets.zero,
+                    dividerColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: primaryColor,
+                    ),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: bodyTextColor,
+                    labelStyle: context.text.titleMedium,
+                    unselectedLabelStyle: context.text.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    tabs: const [
+                      Tab(text: "Sign In"),
+                      Tab(text: "Register"),
+                    ],
+                  ),
+                ),
+              ),
+              30.ph,
 
-          ],
+              // Forms
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TabBarView(
+                    children: [
+                      SignInForm(),
+                      RegisterForm(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

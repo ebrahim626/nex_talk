@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MaterialApp(
         title: 'Nex Talk',
         theme: lightTheme,
+        home: LoginScreen(),
         builder: (context, child) {
           topBarSize = context.padding.top;
           bottomViewPadding = context.padding.bottom;
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
               devicePixelRatio: 1.0,
               textScaler: const TextScaler.linear(1.0),
             ),
-            child: LoginScreen(),
+            child: child!,
           );
         },
       ),
