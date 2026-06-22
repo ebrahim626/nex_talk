@@ -13,15 +13,23 @@ class AddContactBottomSheet extends StatelessWidget {
   static Future<void> show(BuildContext context) {
     return showModalBottomSheet(
       context: context,
-      backgroundColor: bottomSheetColor,
+      backgroundColor: Colors.transparent,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+        return Material(
+          color: bottomSheetColor,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(28),
           ),
-          child: AddContactBottomSheet(),
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: AddContactBottomSheet(),
+          ),
         );
       },
     );

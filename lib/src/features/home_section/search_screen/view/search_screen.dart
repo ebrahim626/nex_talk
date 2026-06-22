@@ -96,10 +96,7 @@ class SearchScreen extends StatelessWidget {
                     32.ph,
                     // Forms
                     Expanded(
-                      child: TabBarView(
-                        physics: NeverScrollableScrollPhysics(),
-                        children: [DirectMessages(), Groups()],
-                      ),
+                      child: TabBarView(children: [DirectMessages(), Groups()]),
                     ),
                   ],
                 ),

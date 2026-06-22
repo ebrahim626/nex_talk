@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:next_talk/src/core/utils/theme/theme.dart';
 
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold({
@@ -17,7 +18,7 @@ class CustomScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backGroundColor,
+      backgroundColor: backGroundColor ?? backgroundColor,
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: bottomNavigationBar,
       body: SafeArea(bottom: false ,child: body),
