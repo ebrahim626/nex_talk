@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:next_talk/src/features/auth/login_section/view/divider/app_divider.dart';
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
 import '../../../../../core/utils/theme/theme.dart';
+import '../../../../common/view/divider/app_divider.dart';
 
 class DirectMessages extends StatelessWidget {
   const DirectMessages({super.key});

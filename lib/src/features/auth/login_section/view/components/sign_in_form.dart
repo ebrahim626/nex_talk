@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/features/home_section/search_screen/view/search_screen.dart';
 
 import '../../../../../core/utils/extensions/context.dart';
@@ -32,10 +34,7 @@ class SignInForm extends StatelessWidget {
         30.ph,
         AppButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => SearchScreen()),
-            );
+            context.go(AppRoutes.searchRoute);
           },
           child: Text("Sign In", style: context.text.titleMedium),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/utils/extensions/context.dart';
+
+import '../../../../core/utils/extensions/context.dart';
 
 class AppDivider extends StatelessWidget {
   const AppDivider({super.key, this.color, this.height, this.thickness});

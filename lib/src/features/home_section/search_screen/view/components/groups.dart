@@ -32,10 +32,7 @@ class Groups extends StatelessWidget {
         30.ph,
         AppButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => SearchScreen()),
-            );
+
           },
           child: Text("Sign In", style: context.text.titleMedium),
         ),

@@ -40,6 +40,7 @@ const containerColor = _borderColor;
 const hintTextColor = Color(0xff6b7280);
 const successColor = Color(0xff34C759);
 const warningColor = Color(0xffff3b30);
+const errorColor = Color(0xffED6B6B);
 
 bool get isTablet => ScreenUtil().screenWidth >= 600;
 

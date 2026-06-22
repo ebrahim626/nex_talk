@@ -3,7 +3,6 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../../../core/utils/extensions/context.dart';
 import '../../../../core/utils/extensions/gap.dart';
 import '../../../../core/utils/theme/theme.dart';
-import '../../../auth/login_section/view/divider/app_divider.dart';
 
 class AppBottomSheetWidget extends StatelessWidget {
   final String? title;
