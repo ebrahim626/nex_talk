@@ -17,7 +17,7 @@ class BottomNavContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: context.isAndroid ? 12 : 18.0),
+      padding: EdgeInsets.only(bottom: context.isAndroid ? 16 : 18.0),
       color: logoContainerColor,
       child: MediaQuery.removePadding(
         context: context,
