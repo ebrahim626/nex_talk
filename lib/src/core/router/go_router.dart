@@ -33,7 +33,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.searchRoute,
             name: SearchScreen.name,
-            builder: (_, _) => const SearchScreen(),
+            builder: (builder, state) => SearchScreen(initialTab: state.extra as int? ?? 0),
           ),
         ],
       ),
