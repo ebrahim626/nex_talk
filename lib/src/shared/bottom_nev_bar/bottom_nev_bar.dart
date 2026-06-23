@@ -58,8 +58,8 @@ class BottomNavBar extends ConsumerWidget {
       ),
 
       BottomNavUtils.buildItem(
-        icon: Icons.groups_outlined,
-        activeIcon: Icons.groups,
+        icon: Icons.group_outlined,
+        activeIcon: Icons.group,
         label: 'Groups',
       ),
 
