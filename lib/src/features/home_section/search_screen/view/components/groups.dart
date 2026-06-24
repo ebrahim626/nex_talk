@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:next_talk/src/features/home_section/search_screen/view/search_screen.dart';
-
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
 import '../../../../../core/utils/theme/theme.dart';
-import '../../../../common/view/button/app_button.dart';
-import '../../../../common/view/textfield/custom_textfield_with_label.dart';
+import '../../../../common/view/divider/app_divider.dart';
 
 class Groups extends StatelessWidget {
   const Groups({super.key});
@@ -14,34 +11,86 @@ class Groups extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTextFieldWithLabel(
-          label: "Email",
-          hintText: "you@exmaple.com",
-          isFillColor: true,
-          leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
-          controller: TextEditingController(),
-        ),
-        12.ph,
-        CustomTextFieldWithLabel(
-          label: "Password",
-          hintText: "**********",
-          isFillColor: true,
-          leading: Icon(Icons.password, color: bodyTextColor, size: 24),
-          controller: TextEditingController(),
-        ),
-        30.ph,
-        AppButton(
-          onPressed: () {
-
-          },
-          child: Text("Sign In", style: context.text.titleMedium),
-        ),
-        20.ph,
-        InkWell(
-          onTap: () {},
-          child: Text(
-            "Forgot Password?",
-            style: context.text.titleSmall?.copyWith(color: primaryColor),
+        Expanded(
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (context, index) => Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: containerColor, // Border color
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundColor: containerColor2,
+                    child: Text(
+                      "SA",
+                      style: context.text.bodyMedium?.copyWith(
+                        color: secondaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+                10.pw,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Sarah Ahmed",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.text.titleSmall,
+                      ),
+                      Text(
+                        "Hey, are you free tomorrow?",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.text.bodySmall,
+                      ),
+                      Text(
+                        "3 members",
+                        style: context.text.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+                10.pw,
+                Column(
+                  children: [
+                    Text(
+                      "2m",
+                      style: context.text.bodySmall?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    2.ph,
+                    Container(
+                      padding: EdgeInsetsGeometry.symmetric(
+                        horizontal: 12,
+                        vertical: 1,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(99),
+                        color: primaryColor,
+                      ),
+                      child: Text(
+                        "3",
+                        style: context.text.titleSmall?.copyWith(fontSize: 13),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            separatorBuilder: (context, index) =>
+                AppDivider(height: 36, color: containerColor2),
+            itemCount: 10,
           ),
         ),
       ],

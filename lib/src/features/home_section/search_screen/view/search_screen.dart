@@ -6,6 +6,7 @@ import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
 import 'package:next_talk/src/features/home_section/add_contact/view/add_contact_bottom_sheet.dart';
+import 'package:next_talk/src/features/home_section/add_group/view/add_contact_bottom_sheet.dart';
 import 'package:next_talk/src/features/home_section/search_screen/controller/search_provider.dart';
 import 'package:next_talk/src/features/home_section/search_screen/view/components/tab_wrapper.dart';
 import '../../../../core/router/app_routes.dart';
@@ -28,7 +29,8 @@ class SearchScreen extends ConsumerWidget {
         child: FloatingActionButton(
           onPressed: () {
             notifier.selectedTabBar == 0 ?
-            AddContactBottomSheet.show(context) : () {};
+            AddContactBottomSheet.show(context) :
+              AddGroupBottomSheet.show(context);
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(99),

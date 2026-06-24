@@ -36,17 +36,26 @@ class DirectMessages extends StatelessWidget {
                   ),
                 ),
                 10.pw,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Sarah Ahmed", style: context.text.titleSmall),
-                    Text(
-                      "Hey, are you free tomorrow?",
-                      style: context.text.bodySmall,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Sarah Ahmed",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.text.titleSmall,
+                      ),
+                      Text(
+                        "Hey, are you free tomorrow?",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.text.bodySmall,
+                      ),
+                    ],
+                  ),
                 ),
-                Spacer(),
+                10.pw,
                 Column(
                   children: [
                     Text(
