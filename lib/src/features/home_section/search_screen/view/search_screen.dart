@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/config/constant/assets_path.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
@@ -7,6 +8,7 @@ import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffol
 import 'package:next_talk/src/features/home_section/add_contact/view/add_contact_bottom_sheet.dart';
 import 'package:next_talk/src/features/home_section/search_screen/controller/search_provider.dart';
 import 'package:next_talk/src/features/home_section/search_screen/view/components/tab_wrapper.dart';
+import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/extensions/gap.dart';
 
 class SearchScreen extends ConsumerWidget {
@@ -25,7 +27,8 @@ class SearchScreen extends ConsumerWidget {
         padding: const EdgeInsets.only(bottom: 85.0),
         child: FloatingActionButton(
           onPressed: () {
-            AddContactBottomSheet.show(context);
+            notifier.selectedTabBar == 0 ?
+            AddContactBottomSheet.show(context) : () {};
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(99),
@@ -57,7 +60,13 @@ class SearchScreen extends ConsumerWidget {
             child: TabWrapper(
               initialTab: initialTab,
               currentTab: notifier.selectedTabBar,
-              onTabChanged: notifier.setTab,
+              onTabChanged: (index) {
+                notifier.setTab(index);
+                context.go(
+                  AppRoutes.searchRoute,
+                  extra: index,
+                );
+              },
             ),
           ),
         ],
