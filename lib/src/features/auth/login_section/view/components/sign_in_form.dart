@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/router/app_routes.dart';
-import 'package:next_talk/src/features/home_section/search_screen/view/search_screen.dart';
-
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
 import '../../../../../core/utils/theme/theme.dart';

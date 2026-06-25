@@ -23,6 +23,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => LoginScreen(),
       ),
 
+      GoRoute(
+        path: AppRoutes.directChatScreenRoute,
+        name: DirectChatScreen.name,
+        builder: (context, state) => DirectChatScreen(),
+      ),
+
 
       /// Home routes
       ShellRoute(
@@ -32,8 +38,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: AppRoutes.searchRoute,
-            name: SearchScreen.name,
-            builder: (builder, state) => SearchScreen(initialTab: state.extra as int? ?? 0),
+            name: AllChatScreen.name,
+            builder: (builder, state) => AllChatScreen(initialTab: state.extra as int? ?? 0),
           ),
         ],
       ),

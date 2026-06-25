@@ -7,21 +7,21 @@ import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
 import 'package:next_talk/src/features/home_section/add_contact/view/add_contact_bottom_sheet.dart';
 import 'package:next_talk/src/features/home_section/add_group/view/add_contact_bottom_sheet.dart';
-import 'package:next_talk/src/features/home_section/search_screen/controller/search_provider.dart';
-import 'package:next_talk/src/features/home_section/search_screen/view/components/tab_wrapper.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/extensions/gap.dart';
+import '../controller/search_provider.dart';
+import 'components/tab_wrapper.dart';
 
-class SearchScreen extends ConsumerWidget {
-  const SearchScreen({super.key, required this.initialTab});
+class AllChatScreen extends ConsumerWidget {
+  const AllChatScreen({super.key, required this.initialTab});
 
   final int initialTab;
   static const String name = "search-screen";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(searchProvider);
-    final notifier = ref.read(searchProvider.notifier);
+    ref.watch(allChatProvider);
+    final notifier = ref.read(allChatProvider.notifier);
 
     return CustomScaffold(
       floatingActionButton: Padding(

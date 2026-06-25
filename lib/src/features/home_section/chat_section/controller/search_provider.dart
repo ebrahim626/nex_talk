@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-typedef SearchProviderNotifier = AutoDisposeAsyncNotifierProvider<SearchProvider, void>;
+typedef AllChatProviderNotifier = AutoDisposeAsyncNotifierProvider<AllChatProvider, void>;
 
-final searchProvider = SearchProviderNotifier(SearchProvider.new);
+final allChatProvider = AllChatProviderNotifier(AllChatProvider.new);
 
-class SearchProvider extends AutoDisposeAsyncNotifier<void> {
+class AllChatProvider extends AutoDisposeAsyncNotifier<void> {
   int selectedTabBar = 0;
 
   @override

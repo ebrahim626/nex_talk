@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/router/app_routes.dart';
-import '../../features/home_section/search_screen/controller/search_provider.dart';
+import '../../features/home_section/chat_section/controller/search_provider.dart';
 import 'components/bottom_nav_container.dart';
 import 'components/build_item.dart';
 
@@ -13,8 +13,8 @@ class BottomNavBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(searchProvider);
-    final tabIndex = ref.read(searchProvider.notifier).selectedTabBar;
+    ref.watch(allChatProvider);
+    final tabIndex = ref.read(allChatProvider.notifier).selectedTabBar;
     // final unreadCount = ref.watch(unreadCountProvider);
     // final scaffoldKey = ref.watch(shellScaffoldKeyProvider);
 
