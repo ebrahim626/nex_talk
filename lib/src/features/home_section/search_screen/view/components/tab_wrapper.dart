@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
@@ -8,7 +7,8 @@ import 'direct_messages.dart';
 import 'groups.dart';
 
 class TabWrapper extends StatefulWidget {
-  const TabWrapper({super.key,
+  const TabWrapper({
+    super.key,
     required this.initialTab,
     required this.currentTab,
     required this.onTabChanged,
@@ -116,4 +116,3 @@ class _TabWrapperState extends State<TabWrapper>
     );
   }
 }
-
