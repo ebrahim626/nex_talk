@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:next_talk/src/core/router/app_routes.dart';
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
 import '../../../../../core/utils/theme/theme.dart';
@@ -16,7 +18,7 @@ class DirectMessages extends StatelessWidget {
             shrinkWrap: true,
             itemBuilder: (context, index) => InkWell(
               onTap: () {
-
+                context.push(AppRoutes.directChatScreenRoute);
               },
               child: Row(
                 children: [
