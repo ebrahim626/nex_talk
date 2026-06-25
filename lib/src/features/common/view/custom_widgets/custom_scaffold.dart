@@ -17,11 +17,16 @@ class CustomScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backGroundColor ?? backgroundColor,
-      floatingActionButton: floatingActionButton,
-      bottomNavigationBar: bottomNavigationBar,
-      body: SafeArea(bottom: false ,child: body),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: backGroundColor ?? backgroundColor,
+        floatingActionButton: floatingActionButton,
+        bottomNavigationBar: bottomNavigationBar,
+        body: SafeArea(bottom: false ,child: body),
+      ),
     );
   }
 }

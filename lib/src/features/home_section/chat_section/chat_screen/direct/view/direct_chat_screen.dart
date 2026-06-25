@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
-
-import '../../../../../../core/config/constant/assets_path.dart';
 import '../../../../../../core/utils/extensions/context.dart';
 import '../../../../../../core/utils/extensions/gap.dart';
 
@@ -20,7 +18,12 @@ class DirectChatScreen extends ConsumerWidget {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsetsGeometry.only(top: 18,bottom: 18,right: 16, left: 8),
+            padding: EdgeInsetsGeometry.only(
+              top: 18,
+              bottom: 18,
+              right: 16,
+              left: 8,
+            ),
             color: logoContainerColor,
             child: Row(
               children: [
@@ -92,7 +95,7 @@ class DirectChatScreen extends ConsumerWidget {
               itemCount: 99,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               itemBuilder: (context, index) {
-                bool isMe = true;
+                bool isMe = index % 2 == 0;
                 return Align(
                   alignment: isMe ? Alignment.bottomRight : Alignment.topLeft,
                   child: Row(
@@ -106,48 +109,117 @@ class DirectChatScreen extends ConsumerWidget {
                           child: Text(
                             "SA",
                             style: context.text.bodyMedium?.copyWith(
-                                color: secondaryColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400
+                              color: secondaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ),
-                        4.pw,
+                        6.pw,
                       ],
-                      Column(
-                        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                        children: [
-                          16.ph,
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            constraints: BoxConstraints(maxWidth: context.width * .7),
-                            decoration: BoxDecoration(
-                              color: isMe ? primaryColor : containerColor2 ,
-                              borderRadius: BorderRadius.only(
-                                bottomRight: isMe ? Radius.circular(0) : Radius.circular(8),
-                                topLeft: Radius.circular(8),
-                                bottomLeft: isMe ? Radius.circular(8) : Radius.circular(0),
-                                topRight: Radius.circular(8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: isMe
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                          children: [
+                            16.ph,
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              constraints: BoxConstraints(
+                                maxWidth: context.width * .7 - (isMe ? 0 : 38), // 32 avatar + 6 gap
+                              ),
+                              decoration: BoxDecoration(
+                                color: isMe ? primaryColor : containerColor2,
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: isMe
+                                      ? Radius.circular(0)
+                                      : Radius.circular(8),
+                                  topLeft: Radius.circular(8),
+                                  bottomLeft: isMe
+                                      ? Radius.circular(8)
+                                      : Radius.circular(0),
+                                  topRight: Radius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                "Hey Are you free today?",
+                                style: context.text.titleSmall?.copyWith(
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                            child: Text(
-                              "Hey Are you free today?",
-                              style: context.text.titleSmall?.copyWith(
-                                fontSize: 14,
+                            2.ph,
+                            Text(
+                              "4:04 PM",
+                              style: context.text.bodySmall?.copyWith(
+                                fontSize: 12,
                               ),
                             ),
-                          ),
-                          2.ph,
-                          Text(
-                            "4:04 PM",
-                            style: context.text.bodySmall?.copyWith(fontSize: 12),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 );
               },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "••• Sarah is typing...",
+                style: context.text.bodySmall?.copyWith(color: secondaryColor),
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(16),
+            color: logoContainerColor,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: primaryColor),
+                    ),
+                    child: Row(
+                      children: [
+                        const Text("😊", style: TextStyle(fontSize: 22)),
+                        10.pw,
+                        Expanded(
+                          child: TextField(
+                            style: context.text.bodyMedium,
+                            decoration: InputDecoration(
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              hintText: "Type a message...",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                18.pw,
+
+                Container(
+                  height: 48,
+                  width: 48,
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(Icons.send_rounded, color: Colors.white),
+                ),
+              ],
             ),
           ),
         ],
