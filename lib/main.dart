@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:hive_ce_flutter/adapters.dart';
+import 'package:next_talk/src/core/config/constant/app_constants.dart';
 import 'package:next_talk/src/core/config/size/size.dart';
 import 'package:next_talk/src/core/router/go_router.export.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 
-void main() {
+void main() async {
+
+  // Hive service
+  await Hive.initFlutter();
+  await Hive.openBox<dynamic>(AppConstants.hiveKey);
+
+  await ScreenUtil.ensureScreenSize();
+
   runApp(ProviderScope(child: const MyApp()));
 }
 
