@@ -66,9 +66,9 @@ class CacheService {
     return null;
   }
 
-  // Future<void> clearAuthTokens() async {
-  //   await delete(_isLoggedIn);
-  //   await delete(_bearerToken);
-  //   await delete(_refreshToken);
-  // }
+  Future<void> clearAuthTokens() async {
+    await delete(_isLoggedIn);
+    await delete(_bearerToken);
+    await delete(_refreshToken);
+  }
 }
