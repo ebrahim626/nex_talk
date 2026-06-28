@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:next_talk/src/core/config/constant/assets_path.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
+import 'package:next_talk/src/features/auth/login_section/login_controller/login_provider.dart';
 import 'package:next_talk/src/features/auth/login_section/view/components/register_form.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
 import '../../../../core/utils/extensions/gap.dart';
 import 'components/sign_in_form.dart';
 
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
   static const String name = "login_screen";
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(loginProvider);
+    final notifier = ref.read(loginProvider.notifier);
+
     return CustomScaffold(
       backGroundColor: backgroundColor,
       body: DefaultTabController(
@@ -68,7 +73,12 @@ class LoginScreen extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     SignInForm(),
-                    RegisterForm(),
+                    RegisterForm(
+                      emailController: notifier.emailController,
+                      passwordController: notifier.passwordController,
+                      userNameController: notifier.userNameController,
+                      onCreateAccount: () {},
+                    ),
                   ],
                 ),
               ),

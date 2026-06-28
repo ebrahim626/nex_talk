@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
 import '../../../../../core/utils/theme/theme.dart';
 import '../../../../common/view/button/app_button.dart';
 import '../../../../common/view/textfield/custom_textfield_with_label.dart';
 
-class RegisterForm extends ConsumerWidget {
-  const RegisterForm({super.key});
+class RegisterForm extends StatelessWidget {
+  const RegisterForm({
+    super.key,
+    required this.emailController,
+    required this.userNameController,
+    required this.passwordController,
+    required this.onCreateAccount,
+  });
+
+  final TextEditingController emailController;
+  final TextEditingController userNameController;
+  final TextEditingController passwordController;
+  final VoidCallback onCreateAccount;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Column(
       children: [
         CustomTextFieldWithLabel(
           label: "Email",
           hintText: "you@exmaple.com",
           isFillColor: true,
-          leading: Icon(
-            Icons.email_outlined,
-            color: bodyTextColor,
-            size: 24,
-          ),
-          controller: TextEditingController(),
+          leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
+          controller: emailController,
         ),
         12.ph,
         CustomTextFieldWithLabel(
@@ -34,7 +40,7 @@ class RegisterForm extends ConsumerWidget {
             color: bodyTextColor,
             size: 24,
           ),
-          controller: TextEditingController(),
+          controller: userNameController,
         ),
         12.ph,
         CustomTextFieldWithLabel(
@@ -42,11 +48,11 @@ class RegisterForm extends ConsumerWidget {
           hintText: "**********",
           isFillColor: true,
           leading: Icon(Icons.password, color: bodyTextColor, size: 24),
-          controller: TextEditingController(),
+          controller: passwordController,
         ),
         30.ph,
         AppButton(
-          onPressed: () {},
+          onPressed: onCreateAccount,
           child: Text("Create Account", style: context.text.titleMedium),
         ),
       ],

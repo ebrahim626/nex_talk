@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 typedef LoginProviderNotifier =
 AutoDisposeAsyncNotifierProvider<LoginProvider, void>;
 
-final loginProviderProvider = LoginProviderNotifier(LoginProvider.new);
+final loginProvider = LoginProviderNotifier(LoginProvider.new);
 
 class LoginProvider extends AutoDisposeAsyncNotifier<void> {
   final TextEditingController emailController = TextEditingController();
