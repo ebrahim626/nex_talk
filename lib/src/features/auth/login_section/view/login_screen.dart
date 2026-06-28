@@ -26,63 +26,69 @@ class LoginScreen extends ConsumerWidget {
         length: 2,
         child: Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              const SizedBox(height: 150),  // manual top spacing instead of center
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(AssetsPath.logo, width: 45, height: 45),
-                  15.pw,
-                  Text("NexTalk", style: context.text.titleLarge),
-                ],
-              ),
-              36.ph,
-              // Tab switcher pill
-               Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: containerColor,
-                  ),
-                  child: TabBar(
-                    padding: EdgeInsets.zero,
-                    dividerColor: Colors.transparent,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicator: BoxDecoration(
+          child: Form(
+            key: notifier.formKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 150),  // manual top spacing instead of center
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(AssetsPath.logo, width: 45, height: 45),
+                    15.pw,
+                    Text("NexTalk", style: context.text.titleLarge),
+                  ],
+                ),
+                36.ph,
+                // Tab switcher pill
+                 Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: primaryColor,
+                      color: containerColor,
                     ),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: bodyTextColor,
-                    labelStyle: context.text.titleMedium,
-                    unselectedLabelStyle: context.text.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                    child: TabBar(
+                      padding: EdgeInsets.zero,
+                      dividerColor: Colors.transparent,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: primaryColor,
+                      ),
+                      labelColor: Colors.white,
+                      unselectedLabelColor: bodyTextColor,
+                      labelStyle: context.text.titleMedium,
+                      unselectedLabelStyle: context.text.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      tabs: const [
+                        Tab(text: "Sign In"),
+                        Tab(text: "Register"),
+                      ],
                     ),
-                    tabs: const [
-                      Tab(text: "Sign In"),
-                      Tab(text: "Register"),
+                  ),
+                30.ph,
+
+                // Forms
+                Expanded(
+                  child: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      SignInForm(),
+                      RegisterForm(
+                        emailController: notifier.emailController,
+                        passwordController: notifier.passwordController,
+                        userNameController: notifier.userNameController,
+                        onCreateAccount: () {},
+                        emailValidator: notifier.validateEmail,
+                        passwordValidator: notifier.validatePassword,
+                        userNameValidator: notifier.validateUserName,
+                      ),
                     ],
                   ),
                 ),
-              30.ph,
-
-              // Forms
-              Expanded(
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    SignInForm(),
-                    RegisterForm(
-                      emailController: notifier.emailController,
-                      passwordController: notifier.passwordController,
-                      userNameController: notifier.userNameController,
-                      onCreateAccount: () {},
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -12,7 +12,7 @@ class AuthRepository {
 
   AuthRepository({required this.apiClient});
 
-  Future<ApiResponse<dynamic>> sign(AuthRequestModel authRequest) async {
+  Future<ApiResponse<dynamic>> register(AuthRequestModel authRequest) async {
     return await apiClient.post(
       apiType: APIType.public,
       path: ApiEndpoints.authRegisterEndpoint,

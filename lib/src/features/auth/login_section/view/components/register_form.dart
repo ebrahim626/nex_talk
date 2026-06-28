@@ -12,12 +12,18 @@ class RegisterForm extends StatelessWidget {
     required this.userNameController,
     required this.passwordController,
     required this.onCreateAccount,
+    required this.userNameValidator,
+    required this.emailValidator,
+    required this.passwordValidator,
   });
 
   final TextEditingController emailController;
   final TextEditingController userNameController;
   final TextEditingController passwordController;
   final VoidCallback onCreateAccount;
+  final String? Function(String?) userNameValidator;
+  final String? Function(String?) emailValidator;
+  final String? Function(String?) passwordValidator;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +35,7 @@ class RegisterForm extends StatelessWidget {
           isFillColor: true,
           leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
           controller: emailController,
+          validator: emailValidator,
         ),
         12.ph,
         CustomTextFieldWithLabel(
@@ -41,6 +48,7 @@ class RegisterForm extends StatelessWidget {
             size: 24,
           ),
           controller: userNameController,
+          validator: userNameValidator,
         ),
         12.ph,
         CustomTextFieldWithLabel(
@@ -49,6 +57,7 @@ class RegisterForm extends StatelessWidget {
           isFillColor: true,
           leading: Icon(Icons.password, color: bodyTextColor, size: 24),
           controller: passwordController,
+          validator: passwordValidator,
         ),
         30.ph,
         AppButton(
