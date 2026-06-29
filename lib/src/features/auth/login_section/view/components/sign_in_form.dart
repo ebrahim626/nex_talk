@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/router/app_routes.dart';
 import '../../../../../core/utils/extensions/context.dart';
@@ -31,11 +32,14 @@ class SignInForm extends StatelessWidget {
         ),
         30.ph,
         AppButton(
-          onPressed: () {
-            context.go(
-              AppRoutes.searchRoute,
-              extra: {'tab': 0, 'userId': 'some_id'},
-            );
+          onPressed: () async {
+            EasyLoading.show();
+            await Future.delayed(Duration(seconds: 4));
+            // context.go(
+            //   AppRoutes.searchRoute,
+            //   extra: {'tab': 0, 'userId': 'some_id'},
+            // );
+            EasyLoading.dismiss();
           },
           child: Text("Sign In", style: context.text.titleMedium),
         ),

@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:next_talk/src/core/config/constant/assets_path.dart';
+import 'package:next_talk/src/core/utils/theme/theme.dart';
 
 class NexTalkLoadingWidget extends StatefulWidget {
   const NexTalkLoadingWidget({super.key});
@@ -10,7 +12,7 @@ class NexTalkLoadingWidget extends StatefulWidget {
 
 class _NexTalkLoadingWidgetState extends State<NexTalkLoadingWidget>
     with TickerProviderStateMixin {
-  static const Color _brand = Color(0xff6c63ff);
+  static const Color _brand = primaryColor;
 
   // Slow rotation for the dashed orbit ring
   late final AnimationController _orbitCtrl = AnimationController(
@@ -26,7 +28,7 @@ class _NexTalkLoadingWidgetState extends State<NexTalkLoadingWidget>
 
   late final Animation<double> _pulse = Tween<double>(
     begin: 0.90,
-    end: 1.05,
+    end: 1.15,
   ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
 
   // Travelling dot along the orbit
@@ -71,8 +73,8 @@ class _NexTalkLoadingWidgetState extends State<NexTalkLoadingWidget>
               return Transform.scale(
                 scale: _pulse.value,
                 child: Container(
-                  width: 52,
-                  height: 52,
+                  width: 55,
+                  height: 55,
                   decoration: BoxDecoration(
                     color: _brand,
                     borderRadius: BorderRadius.circular(14),
@@ -88,10 +90,9 @@ class _NexTalkLoadingWidgetState extends State<NexTalkLoadingWidget>
                   ),
                   child: Center(
                     child: Image.asset(
-                      'assets/images/logo.png', // 👈 your logo
-                      width: 30,
-                      height: 30,
-                      color: Colors.white,
+                      AssetsPath.logo, // 👈 your logo
+                      width: 55,
+                      height: 55,
                     ),
                   ),
                 ),
@@ -113,7 +114,7 @@ class _OrbitPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 4;
+    final radius = size.width / 2 + 10;
 
     // Dashed ring
     final dashPaint = Paint()

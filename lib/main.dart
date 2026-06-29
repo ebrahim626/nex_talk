@@ -34,7 +34,7 @@ void configEasyLoading(BuildContext context) {
     ..backgroundColor = Colors.transparent
     ..indicatorColor = Colors.transparent
     ..textColor = Colors.transparent
-    ..maskColor = Colors.black.withAlpha(20)
+    ..maskColor = Colors.black.withAlpha(100)
     ..maskType = EasyLoadingMaskType.custom
     ..userInteractions = false
     ..dismissOnTap = false
