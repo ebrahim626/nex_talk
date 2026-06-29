@@ -7,5 +7,6 @@ class ApiEndpoints {
 
 
   static const String authRegisterEndpoint = '/api/auth/register';
+  static const String loginEndpoint = '/api/auth/login';
 
 }

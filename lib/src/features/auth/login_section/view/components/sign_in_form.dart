@@ -9,46 +9,61 @@ import '../../../../common/view/button/app_button.dart';
 import '../../../../common/view/textfield/custom_textfield_with_label.dart';
 
 class SignInForm extends StatelessWidget {
-  const SignInForm({super.key});
+  const SignInForm({
+    super.key,
+    required this.emailController,
+    required this.passwordController,
+    required this.onLoginAccount,
+    required this.emailValidator,
+    required this.passwordValidator,
+    required this.formKey,
+  });
+
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final VoidCallback onLoginAccount;
+  final String? Function(String?) emailValidator;
+  final String? Function(String?) passwordValidator;
+  final Key formKey;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CustomTextFieldWithLabel(
-          label: "Email",
-          hintText: "you@exmaple.com",
-          isFillColor: true,
-          leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
-          controller: TextEditingController(),
-        ),
-        12.ph,
-        CustomTextFieldWithLabel(
-          label: "Password",
-          hintText: "**********",
-          isFillColor: true,
-          leading: Icon(Icons.password, color: bodyTextColor, size: 24),
-          controller: TextEditingController(),
-        ),
-        30.ph,
-        AppButton(
-          onPressed: () {
-            context.go(
-              AppRoutes.searchRoute,
-              extra: {'tab': 0, 'userId': 'some_id'},
-            );
-          },
-          child: Text("Sign In", style: context.text.titleMedium),
-        ),
-        20.ph,
-        InkWell(
-          onTap: () {},
-          child: Text(
-            "Forgot Password?",
-            style: context.text.titleSmall?.copyWith(color: primaryColor),
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          CustomTextFieldWithLabel(
+            label: "Email",
+            hintText: "you@exmaple.com",
+            isFillColor: true,
+            leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
+            controller: emailController,
+            validator: emailValidator,
           ),
-        ),
-      ],
+          12.ph,
+          CustomTextFieldWithLabel(
+            label: "Password",
+            hintText: "**********",
+            isFillColor: true,
+            leading: Icon(Icons.password, color: bodyTextColor, size: 24),
+            controller: passwordController,
+            validator: passwordValidator,
+          ),
+          30.ph,
+          AppButton(
+            onPressed: onLoginAccount,
+            child: Text("Sign In", style: context.text.titleMedium),
+          ),
+          20.ph,
+          InkWell(
+            onTap: () {},
+            child: Text(
+              "Forgot Password?",
+              style: context.text.titleSmall?.copyWith(color: primaryColor),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

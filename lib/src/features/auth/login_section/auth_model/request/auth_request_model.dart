@@ -1,11 +1,11 @@
 
 class AuthRequestModel {
-  final String userName;
+  final String? userName;
   final String email;
   final String password;
 
   AuthRequestModel({
-    required this.userName,
+    this.userName,
     required this.email,
     required this.password,
   });
@@ -13,9 +13,10 @@ class AuthRequestModel {
 
 
   Map<String, dynamic> toJson() => {
-    'username': userName,
     'email': email,
     'password': password,
+    if(userName != null)
+      'username': userName,
   };
 }
 

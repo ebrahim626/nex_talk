@@ -19,4 +19,12 @@ class AuthRepository {
       data: authRequest.toJson(),
     );
   }
+
+  Future<ApiResponse<dynamic>> login(AuthRequestModel authRequest) async {
+    return await apiClient.post(
+      apiType: APIType.public,
+      path: ApiEndpoints.loginEndpoint,
+      data: authRequest.toJson(),
+    );
+  }
 }

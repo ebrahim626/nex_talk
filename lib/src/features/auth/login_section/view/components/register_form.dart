@@ -15,6 +15,7 @@ class RegisterForm extends StatelessWidget {
     required this.userNameValidator,
     required this.emailValidator,
     required this.passwordValidator,
+    required this.registerFormKey,
   });
 
   final TextEditingController emailController;
@@ -24,47 +25,51 @@ class RegisterForm extends StatelessWidget {
   final String? Function(String?) userNameValidator;
   final String? Function(String?) emailValidator;
   final String? Function(String?) passwordValidator;
+  final Key registerFormKey;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CustomTextFieldWithLabel(
-          label: "Email",
-          hintText: "you@exmaple.com",
-          isFillColor: true,
-          leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
-          controller: emailController,
-          validator: emailValidator,
-        ),
-        12.ph,
-        CustomTextFieldWithLabel(
-          label: "Username",
-          hintText: "Enter username",
-          isFillColor: true,
-          leading: Icon(
-            Icons.account_circle_outlined,
-            color: bodyTextColor,
-            size: 24,
+    return Form(
+      key: registerFormKey,
+      child: Column(
+        children: [
+          CustomTextFieldWithLabel(
+            label: "Email",
+            hintText: "you@exmaple.com",
+            isFillColor: true,
+            leading: Icon(Icons.email_outlined, color: bodyTextColor, size: 24),
+            controller: emailController,
+            validator: emailValidator,
           ),
-          controller: userNameController,
-          validator: userNameValidator,
-        ),
-        12.ph,
-        CustomTextFieldWithLabel(
-          label: "Password",
-          hintText: "**********",
-          isFillColor: true,
-          leading: Icon(Icons.password, color: bodyTextColor, size: 24),
-          controller: passwordController,
-          validator: passwordValidator,
-        ),
-        30.ph,
-        AppButton(
-          onPressed: onCreateAccount,
-          child: Text("Create Account", style: context.text.titleMedium),
-        ),
-      ],
+          12.ph,
+          CustomTextFieldWithLabel(
+            label: "Username",
+            hintText: "Enter username",
+            isFillColor: true,
+            leading: Icon(
+              Icons.account_circle_outlined,
+              color: bodyTextColor,
+              size: 24,
+            ),
+            controller: userNameController,
+            validator: userNameValidator,
+          ),
+          12.ph,
+          CustomTextFieldWithLabel(
+            label: "Password",
+            hintText: "**********",
+            isFillColor: true,
+            leading: Icon(Icons.password, color: bodyTextColor, size: 24),
+            controller: passwordController,
+            validator: passwordValidator,
+          ),
+          30.ph,
+          AppButton(
+            onPressed: onCreateAccount,
+            child: Text("Create Account", style: context.text.titleMedium),
+          ),
+        ],
+      ),
     );
   }
 }

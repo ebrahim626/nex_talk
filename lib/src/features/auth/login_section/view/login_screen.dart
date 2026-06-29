@@ -9,7 +9,6 @@ import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffol
 import '../../../../core/utils/extensions/gap.dart';
 import 'components/sign_in_form.dart';
 
-
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
@@ -19,6 +18,8 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(loginProvider);
     final notifier = ref.read(loginProvider.notifier);
+    final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> signInFormKey = GlobalKey<FormState>();
 
     return CustomScaffold(
       backGroundColor: backgroundColor,
@@ -26,71 +27,80 @@ class LoginScreen extends ConsumerWidget {
         length: 2,
         child: Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-          child: Form(
-            key: notifier.formKey,
-            child: Column(
-              children: [
-                const SizedBox(height: 150),  // manual top spacing instead of center
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(AssetsPath.logo, width: 45, height: 45),
-                    15.pw,
-                    Text("NexTalk", style: context.text.titleLarge),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 150,
+              ), // manual top spacing instead of center
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(AssetsPath.logo, width: 45, height: 45),
+                  15.pw,
+                  Text("NexTalk", style: context.text.titleLarge),
+                ],
+              ),
+              36.ph,
+              // Tab switcher pill
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: containerColor,
+                ),
+                child: TabBar(
+                  padding: EdgeInsets.zero,
+                  dividerColor: Colors.transparent,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: primaryColor,
+                  ),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: bodyTextColor,
+                  labelStyle: context.text.titleMedium,
+                  unselectedLabelStyle: context.text.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  tabs: const [
+                    Tab(text: "Sign In"),
+                    Tab(text: "Register"),
                   ],
                 ),
-                36.ph,
-                // Tab switcher pill
-                 Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: containerColor,
-                    ),
-                    child: TabBar(
-                      padding: EdgeInsets.zero,
-                      dividerColor: Colors.transparent,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: primaryColor,
-                      ),
-                      labelColor: Colors.white,
-                      unselectedLabelColor: bodyTextColor,
-                      labelStyle: context.text.titleMedium,
-                      unselectedLabelStyle: context.text.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      tabs: const [
-                        Tab(text: "Sign In"),
-                        Tab(text: "Register"),
-                      ],
-                    ),
-                  ),
-                30.ph,
+              ),
+              30.ph,
 
-                // Forms
-                Expanded(
-                  child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      SignInForm(),
-                      RegisterForm(
-                        emailController: notifier.emailController,
-                        passwordController: notifier.passwordController,
-                        userNameController: notifier.userNameController,
-                        onCreateAccount: () {
-                          notifier.authRegister(context);
-                        },
-                        emailValidator: notifier.validateEmail,
-                        passwordValidator: notifier.validatePassword,
-                        userNameValidator: notifier.validateUserName,
-                      ),
-                    ],
-                  ),
+              // Forms
+              Expanded(
+                child: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    SignInForm(
+                      passwordValidator: notifier.validatePassword,
+                      emailValidator: notifier.validateEmail,
+                      passwordController: notifier.passwordController,
+                      emailController: notifier.emailController,
+                      formKey: signInFormKey,
+                      onLoginAccount: () {
+                        notifier.logIn(context, signInFormKey);
+                      },
+                    ),
+                    RegisterForm(
+                      emailController: notifier.registerEmailController,
+                      passwordController: notifier.registerPasswordController,
+                      userNameController: notifier.registerUserNameController,
+                      registerFormKey: registerFormKey,
+                      onCreateAccount: () {
+                        notifier.authRegister(context, registerFormKey);
+                      },
+                      emailValidator: notifier.validateEmail,
+                      passwordValidator: notifier.validatePassword,
+                      userNameValidator: notifier.validateUserName,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

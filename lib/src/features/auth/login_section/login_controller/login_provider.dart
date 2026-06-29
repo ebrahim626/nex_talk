@@ -17,19 +17,31 @@ typedef LoginProviderNotifier =
 final loginProvider = LoginProviderNotifier(LoginProvider.new);
 
 class LoginProvider extends AutoDisposeAsyncNotifier<void> {
+
+  //Register controller
+  final TextEditingController registerEmailController = TextEditingController();
+  final TextEditingController registerUserNameController = TextEditingController();
+  final TextEditingController registerPasswordController = TextEditingController();
+
+  //Sign-in controllers
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   AuthResponseModel? userInfo;
 
-  //  Getters
-  String get email => emailController.text.trim();
-  String get userName => userNameController.text.trim();
-  String get password => passwordController.text;
+  //  Getters for register
+  String get email => registerEmailController.text.trim();
+  String get userName => registerUserNameController.text.trim();
+  String get password => registerPasswordController.text;
+
+  //  Getters for login
+  String get loginEmail => emailController.text.trim();
+  String get loginPassword => passwordController.text;
 
   @override
-  FutureOr<void> build() {}
+  FutureOr<void> build() {
+
+  }
 
   //  Validators
   String? validateEmail(String? value) {
@@ -95,7 +107,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
   }
 
   // ── Register ──────────────────────────────────────────────────────────────
-  Future<void> authRegister(BuildContext context) async {
+  Future<void> authRegister(BuildContext context,GlobalKey<FormState> formKey) async {
     try {
       EasyLoading.show();
       if (!formKey.currentState!.validate()) {
@@ -121,7 +133,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
         ref.invalidate(isLoggedInProvider);
         context.go(
           AppRoutes.searchRoute,
-          extra: {'tab': 0, 'userId': 'some_id'},
+          extra: {'tab': 0, 'userId': userInfo?.userId},
         );
       } else {
         log("error creating account ${response.data}");
@@ -136,4 +148,49 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
       EasyLoading.dismiss();
     }
   }
+
+  Future<void> logIn(BuildContext context,GlobalKey<FormState> formKey) async {
+    try {
+      EasyLoading.show();
+      if (!formKey.currentState!.validate()) {
+        return;
+      }
+      log('[LoginProvider] Registering: $email / $userName');
+      final loginRequestModel = AuthRequestModel(
+        password: loginPassword,
+        email: loginEmail,
+      );
+      final repo = ref.read(authRepository);
+      final response = await repo.login(loginRequestModel);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        FlashCard.showSuccess(message: "Login Successfully");
+        userInfo = AuthResponseModel.fromJson(response.data);
+        log("Bearer token : ${userInfo?.token}");
+        if(userInfo!.token.isNotEmpty) {
+          final store = ref.read(cacheServiceProvider);
+          store.refreshToken;
+          store.setLoggedIn(true);
+          store.setUserId(userInfo?.userId ?? "");
+          log("Stored user id : ${userInfo?.userId}");
+          store.setBearerToken(userInfo?.token ?? "");
+          ref.invalidate(isLoggedInProvider);
+          context.go(
+            AppRoutes.searchRoute,
+            extra: {'tab': 0, 'userId': userInfo?.userId},
+          );
+        }
+      } else {
+        log("error logging ${response.data}");
+        FlashCard.showError(
+          errorMessage: "Failed login : ${response.data["message"]}",
+        );
+      }
+    } catch (e) {
+      log("Error creating account : $e");
+    }
+    finally{
+      EasyLoading.dismiss();
+    }
+  }
+
 }
