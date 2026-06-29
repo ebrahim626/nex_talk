@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_ce/hive.dart';
@@ -9,6 +10,8 @@ import 'package:next_talk/src/core/router/go_router.export.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 
+import 'nex_talk_loading_widget.dart';
+
 void main() async {
 
   // Hive service
@@ -18,6 +21,25 @@ void main() async {
   await ScreenUtil.ensureScreenSize();
 
   runApp(ProviderScope(child: const MyApp()));
+
+}
+
+void configEasyLoading(BuildContext context) {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorSize = 60.0
+    ..radius = 16.0
+    ..progressColor = Colors.transparent
+    ..backgroundColor = Colors.transparent
+    ..indicatorColor = Colors.transparent
+    ..textColor = Colors.transparent
+    ..maskColor = Colors.black.withAlpha(20)
+    ..maskType = EasyLoadingMaskType.custom
+    ..userInteractions = false
+    ..dismissOnTap = false
+    ..indicatorWidget = const NexTalkLoadingWidget()
+    ..boxShadow = <BoxShadow>[];
 }
 
 class MyApp extends ConsumerWidget {
@@ -35,17 +57,20 @@ class MyApp extends ConsumerWidget {
         routerConfig: ref.watch(goRouterProvider),
         title: 'Nex Talk',
         theme: lightTheme,
-        builder: (context, child) {
-          topBarSize = context.padding.top;
-          bottomViewPadding = context.padding.bottom;
-          return MediaQuery(
-            data: context.mq.copyWith(
-              devicePixelRatio: 1.0,
-              textScaler: const TextScaler.linear(1.0),
-            ),
-            child: child!,
-          );
-        },
+        builder: EasyLoading.init(
+          builder: (context, child) {
+            configEasyLoading(context);
+            topBarSize = context.padding.top;
+            bottomViewPadding = context.padding.bottom;
+            return MediaQuery(
+              data: context.mq.copyWith(
+                devicePixelRatio: 1.0,
+                textScaler: const TextScaler.linear(1.0),
+              ),
+              child: child!,
+            );
+          }
+        ),
       ),
     );
   }
