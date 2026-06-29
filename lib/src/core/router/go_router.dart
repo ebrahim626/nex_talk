@@ -13,10 +13,15 @@ final navigatorContextProvider = Provider<BuildContext?>((ref) {
 final goRouterProvider = Provider<GoRouter>((ref) {
   final navigatorKey = ref.watch(navigatorKeyProvider);
   return GoRouter(
-    initialLocation: AppRoutes.loginRoute,
+    initialLocation: AppRoutes.splashScreenRoute,
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
     routes: [
+      GoRoute(
+        path: AppRoutes.splashScreenRoute,
+        name: SplashScreen.name,
+        builder: (_, __) => const SplashScreen(),
+      ),
       GoRoute(
         path: AppRoutes.loginRoute,
         name: LoginScreen.name,

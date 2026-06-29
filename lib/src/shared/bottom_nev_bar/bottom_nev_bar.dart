@@ -15,6 +15,7 @@ class BottomNavBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tabIndex = ref.watch(selectedTabProvider);
     final userId = ref.watch(currentUserIdProvider);
+    // final userId = ref.watch(currentUserIdProvider);
     // final unreadCount = ref.watch(unreadCountProvider);
     // final scaffoldKey = ref.watch(shellScaffoldKeyProvider);
 

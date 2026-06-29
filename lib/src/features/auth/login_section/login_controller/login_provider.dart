@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/database/hive_storage.dart';
@@ -96,6 +97,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
   // ── Register ──────────────────────────────────────────────────────────────
   Future<void> authRegister(BuildContext context) async {
     try {
+      EasyLoading.show();
       if (!formKey.currentState!.validate()) {
         return;
       }
@@ -113,6 +115,8 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
         log("Bearer token : ${userInfo?.token}");
         final store = ref.read(cacheServiceProvider);
         store.setLoggedIn(true);
+        store.setUserId(userInfo?.userId ?? "");
+        log("Stored user id : ${userInfo?.userId}");
         store.setBearerToken(userInfo?.token ?? "");
         ref.invalidate(isLoggedInProvider);
         context.go(
@@ -127,6 +131,9 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
       }
     } catch (e) {
       log("Error creating account : $e");
+    }
+    finally{
+      EasyLoading.dismiss();
     }
   }
 }

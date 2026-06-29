@@ -7,6 +7,7 @@ import 'package:next_talk/src/features/home_section/chat_section/chat_screen/dir
 import 'package:next_talk/src/shared/bottom_nev_bar/bottom_nev_bar.dart';
 
 import '../../features/home_section/chat_section/view/search_screen.dart';
+import '../../features/splash_screen/view/splash_screen.dart';
 import 'app_routes.dart';
 
 part 'go_router.dart';

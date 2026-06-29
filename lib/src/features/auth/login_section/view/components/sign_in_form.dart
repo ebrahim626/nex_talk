@@ -32,14 +32,11 @@ class SignInForm extends StatelessWidget {
         ),
         30.ph,
         AppButton(
-          onPressed: () async {
-            EasyLoading.show();
-            await Future.delayed(Duration(seconds: 4));
-            // context.go(
-            //   AppRoutes.searchRoute,
-            //   extra: {'tab': 0, 'userId': 'some_id'},
-            // );
-            EasyLoading.dismiss();
+          onPressed: () {
+            context.go(
+              AppRoutes.searchRoute,
+              extra: {'tab': 0, 'userId': 'some_id'},
+            );
           },
           child: Text("Sign In", style: context.text.titleMedium),
         ),

@@ -10,7 +10,7 @@ import 'package:next_talk/src/core/router/go_router.export.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 
-import 'nex_talk_loading_widget.dart';
+import 'src/shared/easy_loading_widget/nex_talk_loading_widget.dart';
 
 void main() async {
 
