@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/database/hive_storage.dart';
+import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/features/auth/login_section/auth_model/request/auth_request_model.dart';
 import 'package:next_talk/src/features/auth/login_section/auth_model/response/auth_response_model.dart';
 import 'package:next_talk/src/features/auth/login_section/repository/auth_repository.dart';
@@ -18,6 +20,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  AuthResponseModel? userInfo;
 
   //  Getters
   String get email => emailController.text.trim();
@@ -69,6 +72,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
   }
 
   // ── All-fields validation ─────────────────────────────────────────────────
+
   bool _validateAll() {
     final emailErr = validateEmail(email);
     final userErr = validateUserName(userName);
@@ -90,7 +94,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
   }
 
   // ── Register ──────────────────────────────────────────────────────────────
-  Future<void> authRegister() async {
+  Future<void> authRegister(BuildContext context) async {
     try {
       if (!formKey.currentState!.validate()) {
         return;
@@ -105,12 +109,16 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
       final response = await repo.register(authRequestModel);
       if (response.statusCode == 200 || response.statusCode == 201) {
         FlashCard.showSuccess(message: "Account Created Successfully");
-        AuthResponseModel userInfo = AuthResponseModel.fromJson(response.data);
-        log("Bearer token : ${userInfo.token}");
+        userInfo = AuthResponseModel.fromJson(response.data);
+        log("Bearer token : ${userInfo?.token}");
         final store = ref.read(cacheServiceProvider);
         store.setLoggedIn(true);
-        store.setBearerToken(userInfo.token);
+        store.setBearerToken(userInfo?.token ?? "");
         ref.invalidate(isLoggedInProvider);
+        context.go(
+          AppRoutes.searchRoute,
+          extra: {'tab': 0, 'userId': 'some_id'},
+        );
       } else {
         log("error creating account ${response.data}");
         FlashCard.showError(

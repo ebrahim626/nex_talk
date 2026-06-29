@@ -39,7 +39,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.searchRoute,
             name: AllChatScreen.name,
-            builder: (builder, state) => AllChatScreen(initialTab: state.extra as int? ?? 0),
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>? ?? {};
+              return AllChatScreen(
+                initialTab: extra['tab'] as int? ?? 0,
+                userId: extra['userId'] as String? ?? '',
+              );
+            },
           ),
         ],
       ),

@@ -79,7 +79,9 @@ class LoginScreen extends ConsumerWidget {
                         emailController: notifier.emailController,
                         passwordController: notifier.passwordController,
                         userNameController: notifier.userNameController,
-                        onCreateAccount: () {},
+                        onCreateAccount: () {
+                          notifier.authRegister(context);
+                        },
                         emailValidator: notifier.validateEmail,
                         passwordValidator: notifier.validatePassword,
                         userNameValidator: notifier.validateUserName,

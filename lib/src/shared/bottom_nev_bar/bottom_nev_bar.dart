@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/router/app_routes.dart';
-import '../../features/home_section/chat_section/controller/search_provider.dart';
+import '../../features/home_section/chat_section/view/components/current_user_id_provider.dart';
 import 'components/bottom_nav_container.dart';
 import 'components/build_item.dart';
 
@@ -13,8 +13,8 @@ class BottomNavBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(allChatProvider);
-    final tabIndex = ref.read(allChatProvider.notifier).selectedTabBar;
+    final tabIndex = ref.watch(selectedTabProvider);
+    final userId = ref.watch(currentUserIdProvider);
     // final unreadCount = ref.watch(unreadCountProvider);
     // final scaffoldKey = ref.watch(shellScaffoldKeyProvider);
 
@@ -29,7 +29,7 @@ class BottomNavBar extends ConsumerWidget {
       extendBody: true,
       bottomNavigationBar: BottomNavContainer(
         currentIndex: tabIndex,
-        onTap: (index) => _onItemTapped(context, index),
+        onTap: (index) => _onItemTapped(context, index, userId!),
         navItems: _buildNavItems(context),
       ),
     );
@@ -71,22 +71,28 @@ class BottomNavBar extends ConsumerWidget {
     ];
   }
 
-  void _onItemTapped(BuildContext context, int index) {
+  void _onItemTapped(BuildContext context, int index, String userId) {
     switch (index) {
       case 0:
-        context.go(AppRoutes.searchRoute,extra: index);
+        context.go(
+          AppRoutes.searchRoute,
+          extra: {'tab': index, 'userId': userId},
+        );
         break;
       case 1:
-        context.go(AppRoutes.searchRoute, extra: index);
+        context.go(
+          AppRoutes.searchRoute,
+          extra: {'tab': index, 'userId': userId},
+        );
         break;
     }
   }
 
-  int _getSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.toString();
-
-    if (location.startsWith(AppRoutes.searchRoute)) return 0;
-
-    return 0; // Default to Home
-  }
+  // int _getSelectedIndex(BuildContext context) {
+  //   final String location = GoRouterState.of(context).uri.toString();
+  //
+  //   if (location.startsWith(AppRoutes.searchRoute)) return 0;
+  //
+  //   return 0; // Default to Home
+  // }
 }
