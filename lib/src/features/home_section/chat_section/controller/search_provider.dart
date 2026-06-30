@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:next_talk/src/features/home_section/chat_section/repository/all_chat_repository.dart';
+import 'package:next_talk/src/shared/toast/toast.dart';
 
 import '../view/components/current_user_id_provider.dart';
 
@@ -15,6 +19,7 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<void, String> {
   @override
   FutureOr<void> build(arg) {
     userId = arg;
+    getAllChat();
   }
 
   void setTab(int index) {
@@ -22,5 +27,24 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<void, String> {
     ref.read(selectedTabProvider.notifier).state = index; // 👈 sync global
     ref.notifyListeners();
   }
+
+  Future<void> getAllChat() async {
+    try{
+      EasyLoading.show();
+      final repo = ref.read(allChatRepository);
+      final response = await repo.getAllChat(userId);
+      if(response.statusCode == 200 || response.statusCode == 201) {
+        log("get all chat = ${response.data}");
+      }else{
+        log("error while getting all chats : ${response.error}");
+        FlashCard.showError(errorMessage: "Something went wrong to get all chats");
+      }
+    }catch(e) {
+      log('error getting all chats : $e');
+    }finally{
+      EasyLoading.dismiss();
+    }
+  }
+
 
 }
