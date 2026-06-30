@@ -22,8 +22,7 @@ class SplashScreenProvider extends AutoDisposeFamilyAsyncNotifier<void , BuildCo
       if (!arg.mounted) return; // Ensure the widget is still mounted before navigating
 
       if (isLoggedIn) {
-        arg.go(AppRoutes.loginRoute);
-        // arg.go(AppRoutes.searchRoute,extra: {'tab': 0, 'userId': userId},);
+        arg.go(AppRoutes.searchRoute,extra: {'tab': 0, 'userId': userId},);
       } else {
         arg.go(AppRoutes.loginRoute);
       }
