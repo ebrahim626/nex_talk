@@ -25,7 +25,8 @@ class SplashScreenProvider extends AutoDisposeFamilyAsyncNotifier<void , BuildCo
 
       if (isLoggedIn) {
         log("bearer token : ${bearerToken}");
-        arg.go(AppRoutes.searchRoute,extra: {'tab': 0, 'userId': userId},);
+        arg.go(AppRoutes.loginRoute);
+        // arg.go(AppRoutes.searchRoute,extra: {'tab': 0, 'userId': userId},);
       } else {
         arg.go(AppRoutes.loginRoute);
       }

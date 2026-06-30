@@ -72,32 +72,37 @@ class LoginScreen extends ConsumerWidget {
 
               // Forms
               Expanded(
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    SignInForm(
-                      passwordValidator: notifier.validatePassword,
-                      emailValidator: notifier.validateEmail,
-                      passwordController: notifier.passwordController,
-                      emailController: notifier.emailController,
-                      formKey: signInFormKey,
-                      onLoginAccount: () {
-                        notifier.logIn(context, signInFormKey);
-                      },
+                child: SingleChildScrollView(
+                  child: SizedBox(
+                    height: 400, // adjust as needed
+                    child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        SignInForm(
+                          passwordValidator: notifier.validatePassword,
+                          emailValidator: notifier.validateEmail,
+                          passwordController: notifier.passwordController,
+                          emailController: notifier.emailController,
+                          formKey: signInFormKey,
+                          onLoginAccount: () {
+                            notifier.logIn(context, signInFormKey);
+                          },
+                        ),
+                        RegisterForm(
+                          emailController: notifier.registerEmailController,
+                          passwordController: notifier.registerPasswordController,
+                          userNameController: notifier.registerUserNameController,
+                          registerFormKey: registerFormKey,
+                          onCreateAccount: () {
+                            notifier.authRegister(context, registerFormKey);
+                          },
+                          emailValidator: notifier.validateEmail,
+                          passwordValidator: notifier.validatePassword,
+                          userNameValidator: notifier.validateUserName,
+                        ),
+                      ],
                     ),
-                    RegisterForm(
-                      emailController: notifier.registerEmailController,
-                      passwordController: notifier.registerPasswordController,
-                      userNameController: notifier.registerUserNameController,
-                      registerFormKey: registerFormKey,
-                      onCreateAccount: () {
-                        notifier.authRegister(context, registerFormKey);
-                      },
-                      emailValidator: notifier.validateEmail,
-                      passwordValidator: notifier.validatePassword,
-                      userNameValidator: notifier.validateUserName,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
