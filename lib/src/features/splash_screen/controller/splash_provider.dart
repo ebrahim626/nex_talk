@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,10 +19,12 @@ class SplashScreenProvider extends AutoDisposeFamilyAsyncNotifier<void , BuildCo
       final store = ref.read(cacheServiceProvider);
       final isLoggedIn = await store.isLoggedIn;
       final userId = await store.userId;
+      final bearerToken = await store.bearerToken;
 
       if (!arg.mounted) return; // Ensure the widget is still mounted before navigating
 
       if (isLoggedIn) {
+        log("bearer token : ${bearerToken}");
         arg.go(AppRoutes.searchRoute,extra: {'tab': 0, 'userId': userId},);
       } else {
         arg.go(AppRoutes.loginRoute);
