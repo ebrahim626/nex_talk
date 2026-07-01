@@ -34,6 +34,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => DirectChatScreen(),
       ),
 
+      GoRoute(
+        path: AppRoutes.profileScreenRoute,
+        name: ProfileScreen.name,
+        builder: (context, state) => ProfileScreen(),
+      ),
+
 
       /// Home routes
       ShellRoute(

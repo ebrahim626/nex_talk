@@ -86,6 +86,11 @@ class BottomNavBar extends ConsumerWidget {
           extra: {'tab': index, 'userId': userId},
         );
         break;
+      case 2:
+        context.push(
+          AppRoutes.profileScreenRoute,
+        );
+        break;
     }
   }
 
