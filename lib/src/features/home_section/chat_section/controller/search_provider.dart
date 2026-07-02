@@ -4,9 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:next_talk/src/features/home_section/chat_section/repository/all_chat_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
-
 import '../../../../core/network/signalr/controller/chat_connection_provider.dart';
-import '../../../../core/network/signalr/repository/chat_hub_repository.dart';
 import '../view/components/current_user_id_provider.dart';
 
 typedef AllChatProviderNotifier =
@@ -20,8 +18,6 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<void, String> {
 
   @override
   FutureOr<void> build(arg) async {
-    // wait for the single shared connection instead of connecting again
-    await ref.watch(chatConnectionProvider.future);
     userId = arg;
     getAllChat();
   }

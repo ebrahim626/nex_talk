@@ -44,11 +44,17 @@ class ChatHubService {
     const maxAttempts = 3;
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
+        log('[ChatHubService] 🟢 Attempting to connect...');
+
         _hubConnection = HubConnectionBuilder()
             .withUrl(
           fullUrl,
           options: HttpConnectionOptions(
-            accessTokenFactory: () async => (await getToken()) ?? '',
+            accessTokenFactory: () async {
+              final token = await getToken();
+              log('[ChatHubService] 🔑 Token retrieved: ${token != null ? "Valid (${token.length} chars)" : "NULL"}');
+              return token ?? '';
+            },
             transport: HttpTransportType.WebSockets,
           ),
         )
@@ -58,22 +64,33 @@ class ChatHubService {
         _registerListeners();
 
         _hubConnection.onreconnecting(({error}) {
+          log('[ChatHubService] 🔄 Reconnecting... Error: $error');
           _connectionStateController.add(HubConnectionState.Reconnecting);
         });
 
         _hubConnection.onreconnected(({connectionId}) {
+          log('[ChatHubService] ✅ Reconnected! ConnectionId: $connectionId');
           _connectionStateController.add(HubConnectionState.Connected);
         });
 
         _hubConnection.onclose(({error}) {
+          log('[ChatHubService] ❌ Connection closed. Error: $error');
           _connectionStateController.add(HubConnectionState.Disconnected);
         });
 
+        log('[ChatHubService] Starting connection...');
         await _hubConnection.start();
+        log('[ChatHubService] ✅ CONNECTION ESTABLISHED SUCCESSFULLY!');
         _connectionStateController.add(HubConnectionState.Connected);
+
+        // Log connection details
+        log('[ChatHubService] Connection State: ${_hubConnection.state}');
+        log('[ChatHubService] Connection ID: ${_hubConnection.connectionId ?? "N/A"}');
+
         return;
 
       } catch (e) {
+        log('[ChatHubService] ❌ Connection failed: $e');
         if (attempt == maxAttempts) rethrow;
         await Future.delayed(Duration(milliseconds: 700 * attempt));
       }

@@ -18,7 +18,6 @@ class ChatConnectionNotifier extends AsyncNotifier<void> {
       try {
         final chatService = ref.read(chatHubServiceProvider);
         await chatService.connect();
-        log('[ChatConnectionNotifier] Connection Success. ✅ ');
       } catch (e) {
         log('[ChatConnectionNotifier] Connection failed: ❌ $e');
         rethrow;
