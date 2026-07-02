@@ -1,25 +1,28 @@
+import 'dart:async';
+import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:signalr_netcore/hub_connection.dart';
-
 import '../../../database/hive_storage.dart';
 import '../repository/chat_hub_repository.dart';
 
-final chatConnectionProvider =
-AsyncNotifierProvider<ChatConnectionNotifier, HubConnectionState>(
-    ChatConnectionNotifier.new);
+final chatConnectionProvider = AsyncNotifierProvider<ChatConnectionNotifier, void>(
+  ChatConnectionNotifier.new,
+);
 
-class ChatConnectionNotifier extends AsyncNotifier<HubConnectionState> {
+class ChatConnectionNotifier extends AsyncNotifier<void> {
   @override
-  Future<HubConnectionState> build() async {
-    final isLoggedIn = await ref.watch(isLoggedInProvider.future);
-    final service = ref.read(chatHubServiceProvider);
+  FutureOr<void> build() async {
+    final cacheService = ref.watch(cacheServiceProvider);
+    final userId = await cacheService.userId;
 
-    if (isLoggedIn) {
-      await service.connect();
-      ref.onDispose(() => service.disconnect());
-      return HubConnectionState.Connected;
+    if (userId != null && userId.isNotEmpty) {
+      try {
+        final chatService = ref.read(chatHubServiceProvider);
+        await chatService.connect();
+        log('[ChatConnectionNotifier] Connection Success. ✅ ');
+      } catch (e) {
+        log('[ChatConnectionNotifier] Connection failed: ❌ $e');
+        rethrow;
+      }
     }
-    return HubConnectionState.Disconnected;
   }
-
 }

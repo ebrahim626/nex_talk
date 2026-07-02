@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:signalr_netcore/signalr_client.dart';
+import '../api_client.export.dart';
 
 class ChatHubService {
   late HubConnection _hubConnection;
@@ -29,32 +32,62 @@ class ChatHubService {
   Stream<HubConnectionState> get connectionStateChanges => _connectionStateController.stream;
 
   Future<void> connect() async {
-    _hubConnection = HubConnectionBuilder()
-        .withUrl(
-      '$baseUrl${_hubPath()}',
-      options: HttpConnectionOptions(
-        accessTokenFactory: () async => (await getToken()) ?? '',
-        transport: HttpTransportType.WebSockets,
-        skipNegotiation: true,
-      ),
-    )
-        .withAutomaticReconnect()
-        .build();
+    // Check connectivity first
+    final hasConnection = await _hasNetworkConnection();
+    if (!hasConnection) {
+      log('[ChatHubService] No network connection available');
+      throw Exception('No network connection');
+    }
 
-    _registerListeners();
+    final fullUrl = '$baseUrl${ApiEndpoints.chatHubPath}';
 
-    _hubConnection.onreconnecting(({error}) =>
-        _connectionStateController.add(HubConnectionState.Reconnecting));
-    _hubConnection.onreconnected(({connectionId}) =>
-        _connectionStateController.add(HubConnectionState.Connected));
-    _hubConnection.onclose(({error}) =>
-        _connectionStateController.add(HubConnectionState.Disconnected));
+    const maxAttempts = 3;
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        _hubConnection = HubConnectionBuilder()
+            .withUrl(
+          fullUrl,
+          options: HttpConnectionOptions(
+            accessTokenFactory: () async => (await getToken()) ?? '',
+            transport: HttpTransportType.WebSockets,
+          ),
+        )
+            .withAutomaticReconnect()
+            .build();
 
-    await _hubConnection.start();
-    _connectionStateController.add(HubConnectionState.Connected);
+        _registerListeners();
+
+        _hubConnection.onreconnecting(({error}) {
+          _connectionStateController.add(HubConnectionState.Reconnecting);
+        });
+
+        _hubConnection.onreconnected(({connectionId}) {
+          _connectionStateController.add(HubConnectionState.Connected);
+        });
+
+        _hubConnection.onclose(({error}) {
+          _connectionStateController.add(HubConnectionState.Disconnected);
+        });
+
+        await _hubConnection.start();
+        _connectionStateController.add(HubConnectionState.Connected);
+        return;
+
+      } catch (e) {
+        if (attempt == maxAttempts) rethrow;
+        await Future.delayed(Duration(milliseconds: 700 * attempt));
+      }
+    }
   }
 
-  String _hubPath() => '/chathub';
+  Future<bool> _hasNetworkConnection() async {
+    try {
+      final result = await Connectivity().checkConnectivity();
+      return result.any((r) => r != ConnectivityResult.none);
+    } catch (e) {
+      return true; // Assume connection exists if we can't check
+    }
+  }
 
   void _registerListeners() {
     _hubConnection.on('ReceiveDirectMessage', (args) {
@@ -98,6 +131,7 @@ class ChatHubService {
     });
   }
 
+  // Public methods
   Future<void> sendDirectMessage(Map<String, dynamic> dto) =>
       _hubConnection.invoke('SendDirectMessage', args: [dto]);
 
