@@ -7,13 +7,14 @@ class CustomScaffold extends StatelessWidget {
     required this.body,
     this.bottomNavigationBar,
     this.floatingActionButton,
-    this.backGroundColor,
+    this.backGroundColor, this.appBar,
   });
 
   final Widget body;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final Color? backGroundColor;
+  final AppBar? appBar;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class CustomScaffold extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        appBar: appBar,
         backgroundColor: backGroundColor ?? backgroundColor,
         floatingActionButton: floatingActionButton,
         bottomNavigationBar: bottomNavigationBar,
