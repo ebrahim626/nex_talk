@@ -8,7 +8,8 @@ class ApiEndpoints {
 
   static const String authRegisterEndpoint = '/api/auth/register';
   static const String loginEndpoint = '/api/auth/login';
-  static String getAllChatEndpoint({required String userId}) => '/api/chat/direct/$userId';
+  static const String getAllChatEndpoint = '/api/chat/conversations';
+  static String getChatEndpoint({required String userId}) => '/api/chat/direct/$userId';
 
   static const String chatHubPath = '/hubs/chat';
 }

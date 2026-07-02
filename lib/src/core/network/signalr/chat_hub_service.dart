@@ -21,6 +21,13 @@ class ChatHubService {
   final _messageReadController = StreamController<String>.broadcast();
   final _connectionStateController = StreamController<HubConnectionState>.broadcast();
 
+  final _conversationUpdateController = StreamController<Map<String, dynamic>>.broadcast();
+  Stream<Map<String, dynamic>> get onConversationUpdate => _conversationUpdateController.stream;
+
+  // Keep track of conversations (you can use a ChangeNotifier or provider)
+  List<Map<String, dynamic>> _conversations = [];
+  List<Map<String, dynamic>> get conversations => _conversations;
+
   Stream<Map<String, dynamic>> get onDirectMessage => _directMessageController.stream;
   Stream<Map<String, dynamic>> get onGroupMessage => _groupMessageController.stream;
   Stream<String> get onUserOnline => _userOnlineController.stream;
@@ -106,10 +113,61 @@ class ChatHubService {
     }
   }
 
+  void _updateConversationOnNewMessage(Map<String, dynamic> message) {
+    final senderId = message['senderId'] as String?;
+    final content = message['content'] as String?;
+    final timestamp = message['timestamp'] ?? DateTime.now().toIso8601String();
+
+    if (senderId == null || content == null) return;
+
+    // Find existing conversation
+    final existingIndex = _conversations.indexWhere(
+            (conv) => conv['userId'] == senderId
+    );
+
+    if (existingIndex != -1) {
+      // Update existing conversation
+      _conversations[existingIndex]['lastMessage'] = content;
+      _conversations[existingIndex]['lastMessageAt'] = timestamp;
+      _conversations[existingIndex]['unreadCount'] =
+          (_conversations[existingIndex]['unreadCount'] ?? 0) + 1;
+    } else {
+      // Add new conversation
+      _conversations.add({
+        'userId': senderId,
+        'username': message['senderName'] ?? 'Unknown',
+        'lastMessage': content,
+        'lastMessageAt': timestamp,
+        'unreadCount': 1,
+      });
+    }
+  }
+
   void _registerListeners() {
+    // ✅ SINGLE listener for ReceiveDirectMessage
     _hubConnection.on('ReceiveDirectMessage', (args) {
       final data = args?[0] as Map<String, dynamic>?;
-      if (data != null) _directMessageController.add(data);
+      if (data != null) {
+        log('[ChatHubService] 📨 Received direct message: $data');
+
+        // Add to stream for real-time updates
+        _directMessageController.add(data);
+
+        // CRITICAL: Update the conversation list
+        _updateConversationOnNewMessage(data);
+
+        // Notify UI about the update
+        _conversationUpdateController.add(data);
+      }
+    });
+
+    _hubConnection.on('ReceiveGroupMessage', (args) {
+      final data = args?[0] as Map<String, dynamic>?;
+      if (data != null) {
+        log('[ChatHubService] 📨 Received group message: $data');
+        _groupMessageController.add(data);
+        // You might want to update conversations for group messages too
+      }
     });
 
     _hubConnection.on('ReceiveGroupMessage', (args) {
@@ -185,6 +243,7 @@ class ChatHubService {
     _typingGroupController.close();
     _messageReadController.close();
     _connectionStateController.close();
+    _conversationUpdateController.close();
   }
 
   HubConnectionState? get state => _hubConnection.state;

@@ -11,11 +11,11 @@ class AllChatRepository {
 
   AllChatRepository({required this.apiClient});
 
-  Future<ApiResponse<dynamic>> getAllChat(String userId) async {
+  Future<ApiResponse<dynamic>> getAllChat() async {
     return await apiClient.get(
       apiType: APIType.private,
       tokenType: TokenType.bearerToken,
-      path: ApiEndpoints.getAllChatEndpoint(userId: userId),
+      path: ApiEndpoints.getAllChatEndpoint,
     );
   }
 

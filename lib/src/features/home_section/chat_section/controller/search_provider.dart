@@ -4,7 +4,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:next_talk/src/features/home_section/chat_section/repository/all_chat_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
-import '../../../../core/network/signalr/controller/chat_connection_provider.dart';
 import '../view/components/current_user_id_provider.dart';
 
 typedef AllChatProviderNotifier =
@@ -32,7 +31,7 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<void, String> {
     try{
       EasyLoading.show();
       final repo = ref.read(allChatRepository);
-      final response = await repo.getAllChat(userId);
+      final response = await repo.getAllChat();
       if(response.statusCode == 200 || response.statusCode == 201) {
         log("get all chat = ${response.data}");
       }else{
