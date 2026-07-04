@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +10,7 @@ import 'package:next_talk/src/features/home_section/add_contact/view/add_contact
 import 'package:next_talk/src/features/home_section/add_group/view/add_contact_bottom_sheet.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/extensions/gap.dart';
-import '../controller/search_provider.dart';
+import '../controller/all_chats_controller.dart';
 import 'components/current_user_id_provider.dart';
 import 'components/tab_wrapper.dart';
 
