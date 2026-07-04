@@ -74,6 +74,7 @@ class AllChatScreen extends ConsumerWidget {
             child: TabWrapper(
               initialTab: initialTab,
               currentTab: notifier.selectedTabBar,
+              userId: userId,               // 👈 add this
               onTabChanged: (index) {
                 notifier.setTab(index);
                 context.go(

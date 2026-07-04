@@ -12,10 +12,12 @@ class TabWrapper extends StatefulWidget {
     required this.initialTab,
     required this.currentTab,
     required this.onTabChanged,
+    required this.userId,
   });
 
   final int initialTab;
   final int currentTab;
+  final String userId; // 👈 add this
   final ValueChanged<int> onTabChanged;
 
   @override
@@ -108,7 +110,10 @@ class _TabWrapperState extends State<TabWrapper>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: const [DirectMessages(), Groups()],
+              children: [
+                DirectMessages(userId: widget.userId),
+                const Groups(),
+              ],
             ),
           ),
         ],

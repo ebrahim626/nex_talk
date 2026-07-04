@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:next_talk/src/features/home_section/chat_section/repository/all_chat_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
 import '../../../../core/network/signalr/repository/chat_hub_repository.dart';
+import '../chat_summary_model/response/chat_summary_model.dart';
 import '../view/components/current_user_id_provider.dart';
 
 typedef AllChatProviderNotifier =
@@ -41,7 +42,8 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
       final response = await repo.getAllChat();
       if (response.statusCode == 200 || response.statusCode == 201) {
         log("get all chat = ${response.data}");
-        return (response.data as List<dynamic>? ?? []);
+        final list = (response.data as List<dynamic>? ?? []);
+        return list.map((e) => ChatSummary.fromJson(e as Map<String, dynamic>)).toList();
       } else {
         log("error while getting all chats : ${response.error}");
         FlashCard.showError(errorMessage: "Something went wrong to get all chats");
@@ -57,29 +59,30 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
 
   void _handleIncomingMessage(Map<String, dynamic> message) {
     final current = state.value ?? [];
-    final senderId = message['senderId'];
+    final senderId = message['senderId'] as String?;
+    if (senderId == null) return;
 
     // find if a conversation with this sender already exists
-    final index = current.indexWhere((c) => c['userId'] == senderId);
-
+    final index = current.indexWhere((c) => c.userId == senderId);
     final updated = [...current];
+
     if (index != -1) {
       // bump existing conversation to the top with new last message
-      final existing = Map<String, dynamic>.from(updated[index]);
-      existing['lastMessage'] = message['content'];
-      existing['lastMessageAt'] = message['timestamp'];
-      existing['unreadCount'] = (existing['unreadCount'] ?? 0) + 1;
-      updated.removeAt(index);
-      updated.insert(0, existing);
+      final existing = updated.removeAt(index);
+      updated.insert(0, existing.copyWith(
+        lastMessage: message['content'] as String? ?? '',
+        lastMessageAt: DateTime.tryParse(message['timestamp']?.toString() ?? '') ?? DateTime.now(),
+        unreadCount: existing.unreadCount + 1,
+      ));
     } else {
       // new conversation, add to top
-      updated.insert(0, {
+      updated.insert(0, ChatSummary.fromJson({
         'userId': senderId,
         'username': message['senderName'] ?? 'Unknown',
         'lastMessage': message['content'],
         'lastMessageAt': message['timestamp'],
         'unreadCount': 1,
-      });
+      }));
     }
 
     // THIS is what makes the UI actually update
