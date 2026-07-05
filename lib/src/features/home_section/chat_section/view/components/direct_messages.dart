@@ -23,21 +23,26 @@ class DirectMessages extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatsAsync = ref.watch(allChatProvider(userId));
+    final notifier = ref.watch(allChatProvider(userId).notifier);
 
     return chatsAsync.when(
       data: (chats) {
         if (chats.isEmpty) {
           return const Center(child: Text("No conversations yet"));
         }
-        return ListView.separated(
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            final chat = chats[index];
-            return _DirectMessageTile(chat: chat);
-          },
-          separatorBuilder: (context, index) =>
-              AppDivider(height: 36, color: containerColor2),
-          itemCount: chats.length,
+        return RefreshIndicator(
+          color: Colors.white,
+          onRefresh: notifier.refresh,
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final chat = chats[index];
+              return _DirectMessageTile(chat: chat);
+            },
+            separatorBuilder: (context, index) =>
+                AppDivider(height: 36, color: containerColor2),
+            itemCount: chats.length,
+          ),
         );
       },
       loading: () => const DirectMessageShimmer(),

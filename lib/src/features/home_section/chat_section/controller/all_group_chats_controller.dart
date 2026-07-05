@@ -1,28 +1,25 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:next_talk/src/features/home_section/chat_section/chat_summary_model/response/group_summary_model.dart';
 import 'package:next_talk/src/features/home_section/chat_section/repository/all_chat_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
 import '../../../../core/network/signalr/repository/chat_hub_repository.dart';
 import '../chat_summary_model/response/chat_summary_model.dart';
 import '../view/components/current_user_id_provider.dart';
 
-typedef AllChatProviderNotifier =
-AutoDisposeAsyncNotifierProviderFamily<AllChatProvider, List<dynamic>, String>;
+typedef AllGroupChatsProviderNotifier =
+AutoDisposeAsyncNotifierProviderFamily<AllGroupChatsProvider, List<dynamic>, String>;
 
-final allChatProvider = AllChatProviderNotifier(AllChatProvider.new);
+final allGroupChatsProvider = AllGroupChatsProviderNotifier(AllGroupChatsProvider.new);
 
-class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, String> {
-  int selectedTabBar = 0;
-  String userId = "";
+class AllGroupChatsProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, String> {
 
   @override
   FutureOr<List<dynamic>> build(arg) async {
-    userId = arg;
-
     // 1. Subscribe to the live socket stream FIRST, before the REST fetch
     final chatService = ref.read(chatHubServiceProvider);
-    final subscription = chatService.onDirectMessage.listen((message) {
+    final subscription = chatService.onGroupMessage.listen((message) {
       _handleIncomingMessage(message);
     });
 
@@ -31,10 +28,10 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
     ref.onDispose(subscription.cancel);
 
     // 3. Fetch the initial snapshot from REST, as you already do
-    return _fetchAllChats();
+    return _fetchGroupChats();
   }
 
-  Future<List<dynamic>> _fetchAllChats() async {
+  Future<List<dynamic>> _fetchGroupChats() async {
     try {
       final repo = ref.read(allChatRepository);
       final response = await repo.getAllChat();
@@ -70,11 +67,11 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
         lastMessage: message['content'] as String? ?? '',
         lastMessageAt: DateTime.tryParse(message['timestamp']?.toString() ?? '') ?? DateTime.now(),
         unreadCount: existing.unreadCount + 1,
-          username: message["senderUsername"],
+        username: message["senderUsername"],
       ));
     } else {
       // new conversation, add to top
-      updated.insert(0, ChatSummary.fromJson({
+      updated.insert(0, GroupSummary.fromJson({
         'userId': senderId,
         'username': message['senderUsername'] ?? 'Unknown',
         'lastMessage': message['content'],
@@ -87,13 +84,7 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
     state = AsyncData(updated);
   }
 
-  void setTab(int index) {
-    selectedTabBar = index;
-    ref.read(selectedTabProvider.notifier).state = index;
-    ref.notifyListeners();
-  }
-
   Future<void> refresh() async {
-    state = AsyncData(await _fetchAllChats());
+    state = AsyncData(await _fetchGroupChats());
   }
 }

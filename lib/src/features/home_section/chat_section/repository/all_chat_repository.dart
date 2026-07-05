@@ -19,4 +19,12 @@ class AllChatRepository {
     );
   }
 
+  Future<ApiResponse<dynamic>> getAllGroupChat() async {
+    return await apiClient.get(
+      apiType: APIType.private,
+      tokenType: TokenType.bearerToken,
+      path: ApiEndpoints.getAllChatEndpoint,
+    );
+  }
+
 }
