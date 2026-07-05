@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:next_talk/src/core/router/app_routes.dart';
+import 'package:next_talk/src/core/service/text_formatter.dart';
+import 'package:next_talk/src/core/service/time_formatter.dart';
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
 import '../../../../../core/utils/theme/theme.dart';
@@ -45,22 +47,7 @@ class _DirectMessageTile extends StatelessWidget {
   const _DirectMessageTile({required this.chat});
 
   final ChatSummary chat;
-
-  String get _initials {
-    final parts = chat.username.trim().split(' ');
-    if (parts.isEmpty) return '?';
-    if (parts.length == 1) return parts[0].substring(0, 1).toUpperCase();
-    return (parts[0].substring(0, 1) + parts[1].substring(0, 1)).toUpperCase();
-  }
-
-  String get _timeLabel {
-    final diff = DateTime.now().difference(chat.lastMessageAt);
-    if (diff.inMinutes < 1) return "now";
-    if (diff.inMinutes < 60) return "${diff.inMinutes}m";
-    if (diff.inHours < 24) return "${diff.inHours}h";
-    if (diff.inDays == 1) return "Yesterday";
-    return DateFormat('MMM d').format(chat.lastMessageAt);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +69,7 @@ class _DirectMessageTile extends StatelessWidget {
               radius: 24,
               backgroundColor: containerColor2,
               child: Text(
-                _initials,
+                TextFormatter.avatarText(chat.username),
                 style: context.text.bodyMedium?.copyWith(color: secondaryColor),
               ),
             ),
@@ -111,7 +98,7 @@ class _DirectMessageTile extends StatelessWidget {
           Column(
             children: [
               Text(
-                _timeLabel,
+                DateTimeFormatter.timeAgo(chat.lastMessageAt),
                 style: context.text.bodySmall?.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

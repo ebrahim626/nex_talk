@@ -37,7 +37,6 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
 
   Future<List<dynamic>> _fetchAllChats() async {
     try {
-      EasyLoading.show();
       final repo = ref.read(allChatRepository);
       final response = await repo.getAllChat();
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -53,7 +52,6 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
       log('error getting all chats : $e');
       return [];
     } finally {
-      EasyLoading.dismiss();
     }
   }
 
