@@ -1,8 +1,7 @@
 part of 'go_router.export.dart';
 
-
 final navigatorKeyProvider = Provider<GlobalKey<NavigatorState>>(
-      (ref) => GlobalKey<NavigatorState>(),
+  (ref) => GlobalKey<NavigatorState>(),
 );
 
 final navigatorContextProvider = Provider<BuildContext?>((ref) {
@@ -31,7 +30,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.directChatScreenRoute,
         name: DirectChatScreen.name,
-        builder: (context, state) => DirectChatScreen(),
+        builder: (context, state) =>
+            DirectChatScreen(userId: state.extra as String),
       ),
 
       GoRoute(
@@ -39,7 +39,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: ProfileScreen.name,
         builder: (context, state) => ProfileScreen(),
       ),
-
 
       /// Home routes
       ShellRoute(

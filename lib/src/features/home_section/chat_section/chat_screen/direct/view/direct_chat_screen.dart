@@ -3,16 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
+import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/controller/direct_chat_controller.dart';
 import '../../../../../../core/utils/extensions/context.dart';
 import '../../../../../../core/utils/extensions/gap.dart';
 
 class DirectChatScreen extends ConsumerWidget {
-  const DirectChatScreen({super.key});
+  const DirectChatScreen({super.key, required this.userId});
+
+  final String userId;
 
   static const String name = "direct_chat-screen";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(directChatProvider(userId));
+    final notifier = ref.read(directChatProvider(userId).notifier);
+
     return CustomScaffold(
       backGroundColor: backgroundColor,
       body: Column(
@@ -127,7 +133,9 @@ class DirectChatScreen extends ConsumerWidget {
                             Container(
                               padding: EdgeInsets.all(8),
                               constraints: BoxConstraints(
-                                maxWidth: context.width * .7 - (isMe ? 0 : 38), // 32 avatar + 6 gap
+                                maxWidth:
+                                    context.width * .7 -
+                                    (isMe ? 0 : 38), // 32 avatar + 6 gap
                               ),
                               decoration: BoxDecoration(
                                 color: isMe ? primaryColor : containerColor2,

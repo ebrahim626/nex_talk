@@ -12,7 +12,7 @@ class DirectChatRepository {
 
   DirectChatRepository({required this.apiClient});
 
-  Future<ApiResponse<dynamic>> getAllChat(String userId) async {
+  Future<ApiResponse<dynamic>> getChats(String userId) async {
     return await apiClient.get(
       apiType: APIType.private,
       tokenType: TokenType.bearerToken,

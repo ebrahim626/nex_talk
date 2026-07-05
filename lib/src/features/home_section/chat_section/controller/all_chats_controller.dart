@@ -39,7 +39,6 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
       final repo = ref.read(allChatRepository);
       final response = await repo.getAllChat();
       if (response.statusCode == 200 || response.statusCode == 201) {
-        log("get all chat = ${response.data}");
         final list = (response.data as List<dynamic>? ?? []);
         return list.map((e) => ChatSummary.fromJson(e as Map<String, dynamic>)).toList();
       } else {
@@ -70,7 +69,7 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
         lastMessage: message['content'] as String? ?? '',
         lastMessageAt: DateTime.tryParse(message['timestamp']?.toString() ?? '') ?? DateTime.now(),
         unreadCount: existing.unreadCount + 1,
-          username: message["senderUsername"],
+        username: message["senderUsername"],
       ));
     } else {
       // new conversation, add to top
