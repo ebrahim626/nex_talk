@@ -128,6 +128,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
         final store = ref.read(cacheServiceProvider);
         store.setLoggedIn(true);
         store.setUserId(userInfo?.userId ?? "");
+        store.setUserName(userInfo?.username ?? "");
         log("Stored user id : ${userInfo?.userId}");
         store.setBearerToken(userInfo?.token ?? "");
         ref.invalidate(isLoggedInProvider);
@@ -171,6 +172,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
           store.refreshToken;
           store.setLoggedIn(true);
           store.setUserId(userInfo?.userId ?? "");
+          store.setUserName(userInfo?.username ?? "");
           log("Stored user id : ${userInfo?.userId}");
           store.setBearerToken(userInfo?.token ?? "");
           ref.invalidate(isLoggedInProvider);

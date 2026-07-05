@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:next_talk/src/features/home_section/chat_section/repository/all_chat_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
+import '../../../../core/database/hive_storage.dart';
 import '../../../../core/network/signalr/repository/chat_hub_repository.dart';
 import '../chat_summary_model/response/chat_summary_model.dart';
 import '../view/components/current_user_id_provider.dart';
@@ -53,23 +54,31 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
     }
   }
 
-  void _handleIncomingMessage(Map<String, dynamic> message) {
-    final current = state.value ?? [];
+  void _handleIncomingMessage(Map<String, dynamic> message) async {
+    final currentUserId = await ref.read(cacheServiceProvider).userId;
     final senderId = message['senderId'] as String?;
-    if (senderId == null) return;
+    final recipientId = message['recipientId'] as String?;
+    if (senderId == null || recipientId == null || currentUserId == null) return;
 
-    // find if a conversation with this sender already exists
-    final index = current.indexWhere((c) => c.userId == senderId);
+    // The "other party" for this conversation row is whichever side ISN'T me —
+    // never assume senderId is always the other person.
+    final otherPartyId = senderId == currentUserId ? recipientId : senderId;
+
+    // Never let this handler create/update a conversation entry pointing at myself.
+    if (otherPartyId == currentUserId) return;
+
+    final current = state.value ?? [];
+    final index = current.indexWhere((c) => c.userId == otherPartyId);
+
     final updated = [...current];
-
     if (index != -1) {
-      // bump existing conversation to the top with new last message
       final existing = updated.removeAt(index);
       updated.insert(0, existing.copyWith(
         lastMessage: message['content'] as String? ?? '',
-        lastMessageAt: DateTime.tryParse(message['timestamp']?.toString() ?? '') ?? DateTime.now(),
-        unreadCount: existing.unreadCount + 1,
-        username: message["senderUsername"],
+        // lastMessageAt: DateTime.tryParse(message['timestamp']?.toString() ?? '') ?? DateTime.now(),
+        lastMessageAt: DateTime.tryParse(message['sentAt']?.toString() ?? '') ?? DateTime.now().toLocal(),
+        unreadCount: senderId == currentUserId ? existing.unreadCount : existing.unreadCount + 1,
+        username: senderId == currentUserId ? existing.username : message["senderUsername"],
       ));
     } else {
       // new conversation, add to top

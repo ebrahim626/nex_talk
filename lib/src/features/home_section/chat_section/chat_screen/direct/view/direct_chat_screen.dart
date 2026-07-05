@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/controller/direct_chat_controller.dart';
+import '../../../../../../core/database/hive_storage.dart';
 import '../../../../../../core/utils/extensions/context.dart';
 import '../../../../../../core/utils/extensions/gap.dart';
+import '../../../view/components/current_user_id_provider.dart';
 
 class DirectChatScreen extends ConsumerWidget {
   const DirectChatScreen({super.key, required this.userId});
@@ -16,8 +19,9 @@ class DirectChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(directChatProvider(userId));
+    final chatsAsync = ref.watch(directChatProvider(userId));
     final notifier = ref.read(directChatProvider(userId).notifier);
+    final currentUserId = ref.watch(currentUserIdProvider);
 
     return CustomScaffold(
       backGroundColor: backgroundColor,
@@ -67,10 +71,17 @@ class DirectChatScreen extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Sarah Ahmed",
-                      style: context.text.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w500,
+                    InkWell(
+                      onTap: () async {
+                        ref.watch(cacheServiceProvider);
+                        await ref.read(cacheServiceProvider).clearAuthTokens();
+                        context.push(AppRoutes.splashScreenRoute);
+                      },
+                      child: Text(
+                        "Sarah Ahmed",
+                        style: context.text.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
 
@@ -96,93 +107,96 @@ class DirectChatScreen extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              reverse: true,
-              itemCount: 99,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              itemBuilder: (context, index) {
-                bool isMe = index % 2 == 0;
-                return Align(
-                  alignment: isMe ? Alignment.bottomRight : Alignment.topLeft,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (!isMe) ...[
-                        CircleAvatar(
-                          radius: 16,
-                          backgroundColor: containerColor2,
-                          child: Text(
-                            "SA",
-                            style: context.text.bodyMedium?.copyWith(
-                              color: secondaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
+            child: chatsAsync.when(
+              data: (chats) {
+                if (chats.isEmpty) {
+                  return const Center(child: Text("Say hello 👋"));
+                }
+                return ListView.builder(
+                  controller: notifier.scrollController,
+                  reverse: true,
+                  itemCount: chats.length,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  itemBuilder: (context, index) {
+                    // reverse: true means index 0 is the bottom (latest) message
+                    // final message = chats[chats.length - 1 - index];
+                    final message = chats[index]; // No need to reverse since we use reverse: true
+                    final isMe = message.senderId == currentUserId;
+
+                    return Align(
+                      alignment: isMe ? Alignment.bottomRight : Alignment.topLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          if (!isMe) ...[
+                            CircleAvatar(
+                              radius: 16,
+                              backgroundColor: containerColor2,
+                              child: Text(
+                                message.senderUsername.isNotEmpty
+                                    ? message.senderUsername.substring(0, 1).toUpperCase()
+                                    : "?",
+                                style: context.text.bodyMedium?.copyWith(
+                                  color: secondaryColor, fontSize: 14, fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            6.pw,
+                          ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              children: [
+                                16.ph,
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  constraints: BoxConstraints(
+                                    maxWidth: context.width * .7 - (isMe ? 0 : 38),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isMe ? primaryColor : containerColor2,
+                                    borderRadius: BorderRadius.only(
+                                      bottomRight: isMe ? Radius.circular(0) : Radius.circular(8),
+                                      topLeft: Radius.circular(8),
+                                      bottomLeft: isMe ? Radius.circular(8) : Radius.circular(0),
+                                      topRight: Radius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    message.content,
+                                    style: context.text.titleSmall?.copyWith(fontSize: 14),
+                                  ),
+                                ),
+                                2.ph,
+                                Text(
+                                  TimeOfDay.fromDateTime(message.sentAt).format(context),
+                                  style: context.text.bodySmall?.copyWith(fontSize: 12),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        6.pw,
-                      ],
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: isMe
-                              ? CrossAxisAlignment.end
-                              : CrossAxisAlignment.start,
-                          children: [
-                            16.ph,
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              constraints: BoxConstraints(
-                                maxWidth:
-                                    context.width * .7 -
-                                    (isMe ? 0 : 38), // 32 avatar + 6 gap
-                              ),
-                              decoration: BoxDecoration(
-                                color: isMe ? primaryColor : containerColor2,
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: isMe
-                                      ? Radius.circular(0)
-                                      : Radius.circular(8),
-                                  topLeft: Radius.circular(8),
-                                  bottomLeft: isMe
-                                      ? Radius.circular(8)
-                                      : Radius.circular(0),
-                                  topRight: Radius.circular(8),
-                                ),
-                              ),
-                              child: Text(
-                                "Hey Are you free today?",
-                                style: context.text.titleSmall?.copyWith(
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            2.ph,
-                            Text(
-                              "4:04 PM",
-                              style: context.text.bodySmall?.copyWith(
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => const Center(child: Text("Failed to load messages")),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "••• Sarah is typing...",
-                style: context.text.bodySmall?.copyWith(color: secondaryColor),
+          if (notifier.isPeerTyping)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "••• typing...",
+                  style: context.text.bodySmall?.copyWith(color: secondaryColor),
+                ),
               ),
             ),
-          ),
           Container(
             padding: const EdgeInsets.all(16),
             color: logoContainerColor,
@@ -201,8 +215,10 @@ class DirectChatScreen extends ConsumerWidget {
                         10.pw,
                         Expanded(
                           child: TextField(
+                            controller: notifier.sentText,
                             style: context.text.bodyMedium,
-                            decoration: InputDecoration(
+                            onChanged: (_) => notifier.notifyTyping(),
+                            decoration: const InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
                               disabledBorder: InputBorder.none,
@@ -215,17 +231,20 @@ class DirectChatScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-
                 18.pw,
-
-                Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(14),
+                InkWell(
+                  onTap: () {
+                    final text = notifier.sentText.text;
+                    if (text.trim().isEmpty) return;
+                    notifier.sendMessage(text);
+                    notifier.sentText.clear();
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(14)),
+                    child: const Icon(Icons.send_rounded, color: Colors.white),
                   ),
-                  child: const Icon(Icons.send_rounded, color: Colors.white),
                 ),
               ],
             ),

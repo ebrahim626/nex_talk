@@ -29,6 +29,7 @@ class CacheService {
   static const _isLoggedIn = 'isLoggedIn';
   static const _bearerToken = 'bearerToken';
   static const _userId = 'userId';
+  static const _userName = 'userName';
   static const _refreshToken = 'refreshToken';
 
   Future<String?> get bearerToken async => read<String>(_bearerToken);
@@ -36,6 +37,9 @@ class CacheService {
 
   Future<String?> get userId async => read<String>(_userId);
   Future<void> setUserId(String value) async => save(_userId, value);
+
+  Future<String?> get userName async => read<String>(_userName);
+  Future<void> setUserName(String value) async => save(_userName, value);
 
 
   Future<String?> get refreshToken async => read<String>(_refreshToken);
@@ -74,6 +78,7 @@ class CacheService {
     await delete(_isLoggedIn);
     await delete(_bearerToken);
     await delete(_userId);
+    await delete(_userName);
     await delete(_refreshToken);
   }
 }

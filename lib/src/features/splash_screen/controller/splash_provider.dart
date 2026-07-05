@@ -15,12 +15,17 @@ class SplashScreenProvider extends AutoDisposeFamilyAsyncNotifier<void, BuildCon
 
   @override
   FutureOr<void> build(BuildContext arg) async {
-    // Show splash screen for 2.5 seconds
-    // await Future.delayed(const Duration(milliseconds: 2500));
 
     final store = ref.read(cacheServiceProvider);
     final isLoggedIn = await store.isLoggedIn;
     final userId = await store.userId;
+
+    // Show splash screen for 3.5 seconds
+    if (!isLoggedIn) {
+      await Future.delayed(const Duration(milliseconds: 3500));
+    }
+
+
 
     if (!arg.mounted) return;
 

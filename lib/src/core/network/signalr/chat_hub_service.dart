@@ -170,11 +170,6 @@ class ChatHubService {
       }
     });
 
-    _hubConnection.on('ReceiveGroupMessage', (args) {
-      final data = args?[0] as Map<String, dynamic>?;
-      if (data != null) _groupMessageController.add(data);
-    });
-
     _hubConnection.on('UserOnline', (args) {
       final userId = args?[0] as String?;
       if (userId != null) _userOnlineController.add(userId);
