@@ -10,6 +10,7 @@ import 'package:next_talk/src/features/auth/login_section/auth_model/request/aut
 import 'package:next_talk/src/features/auth/login_section/auth_model/response/auth_response_model.dart';
 import 'package:next_talk/src/features/auth/login_section/repository/auth_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
+import '../../../../core/network/signalr/controller/chat_connection_provider.dart';
 
 typedef LoginProviderNotifier =
     AutoDisposeAsyncNotifierProvider<LoginProvider, void>;
@@ -86,25 +87,25 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
 
   // ── All-fields validation ─────────────────────────────────────────────────
 
-  bool _validateAll() {
-    final emailErr = validateEmail(email);
-    final userErr = validateUserName(userName);
-    final passErr = validatePassword(password);
-
-    if (emailErr != null) {
-      log('[LoginProvider] Email error: $emailErr');
-      return false;
-    }
-    if (userErr != null) {
-      log('[LoginProvider] Username error: $userErr');
-      return false;
-    }
-    if (passErr != null) {
-      log('[LoginProvider] Password error: $passErr');
-      return false;
-    }
-    return true;
-  }
+  // bool _validateAll() {
+  //   final emailErr = validateEmail(email);
+  //   final userErr = validateUserName(userName);
+  //   final passErr = validatePassword(password);
+  //
+  //   if (emailErr != null) {
+  //     log('[LoginProvider] Email error: $emailErr');
+  //     return false;
+  //   }
+  //   if (userErr != null) {
+  //     log('[LoginProvider] Username error: $userErr');
+  //     return false;
+  //   }
+  //   if (passErr != null) {
+  //     log('[LoginProvider] Password error: $passErr');
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   // ── Register ──────────────────────────────────────────────────────────────
   Future<void> authRegister(BuildContext context,GlobalKey<FormState> formKey) async {
@@ -132,6 +133,18 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
         log("Stored user id : ${userInfo?.userId}");
         store.setBearerToken(userInfo?.token ?? "");
         ref.invalidate(isLoggedInProvider);
+
+        // 👈 establish the socket connection BEFORE navigating in
+        try {
+          await ref.read(chatConnectionProvider.future);
+          log("[LoginProvider] SignalR connected after register");
+        } catch (e) {
+          log("[LoginProvider] SignalR connect failed after register: $e");
+          // don't block navigation on this — chat features will
+          // surface their own error state if the socket never connects
+        }
+
+        if (!context.mounted) return;
         context.go(
           AppRoutes.searchRoute,
           extra: {'tab': 0, 'userId': userInfo?.userId},
@@ -176,6 +189,18 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
           log("Stored user id : ${userInfo?.userId}");
           store.setBearerToken(userInfo?.token ?? "");
           ref.invalidate(isLoggedInProvider);
+
+          // 👈 establish the socket connection BEFORE navigating in
+          try {
+            await ref.read(chatConnectionProvider.future);
+            log("[LoginProvider] SignalR connected after register");
+          } catch (e) {
+            log("[LoginProvider] SignalR connect failed after register: $e");
+            // don't block navigation on this — chat features will
+            // surface their own error state if the socket never connects
+          }
+
+          if (!context.mounted) return;
           context.go(
             AppRoutes.searchRoute,
             extra: {'tab': 0, 'userId': userInfo?.userId},
