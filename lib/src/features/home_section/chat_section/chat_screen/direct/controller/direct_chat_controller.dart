@@ -17,7 +17,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
   bool isTyping = false;
   bool get isPeerTyping => isTyping;
   TextEditingController sentText = TextEditingController();
-  final ScrollController scrollController = ScrollController();
+  // final ScrollController scrollController = ScrollController();
 
   List<DirectChatModel>? chats;
 
@@ -81,25 +81,26 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     state = AsyncData([...current,message]);
   }
   
-  Future<void> sendMessage(String content) async {
+  Future<void> sendMessage() async {
+    if(sentText.text.trim().isEmpty) return;
     final store = ref.read(cacheServiceProvider);
     final currentUserId = await store.userId;
     final senderUserName = await store.userName;
-    if (currentUserId == null || content.trim().isEmpty || senderUserName == null) {
-      log("currentUserId | senderUserName one is empty");
+    if (currentUserId == null || sentText.text.trim().isEmpty || senderUserName == null) {
+      log("currentUserId | senderUserName one is empty --- ${sentText.text} --- ${currentUserId} --- ${senderUserName}");
       return;
     };
 
     final chatService = ref.read(chatHubServiceProvider);
     final dto = {
       'recipientId': arg,
-      'content': content.trim(),
+      'content': sentText.text.trim(),
     };
     // optimistic UI: show the message immediately, before server confirms
 
     final optimistic = DirectChatModel(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
-      content: content.trim(),
+      content: sentText.text.trim(),
       sentAt: DateTime.now().toLocal(),
       isRead: false,
       senderId: currentUserId,
@@ -107,8 +108,10 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
       recipientId: arg,
     );
 
+    sentText.clear();
+
     final current = state.value ?? [];
-    state = AsyncData([...current, optimistic]);
+    state = AsyncData([optimistic,...current,]);
 
     try {
       await chatService.sendDirectMessage(dto);
@@ -120,15 +123,15 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     }
   }
 
-  void scrollToEnd() {
-    if (scrollController.hasClients) {
-      scrollController.animateTo(
-        0, // Since list is reversed, 0 is the end
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
-  }
+  // void scrollToEnd() {
+  //   if (scrollController.hasClients) {
+  //     scrollController.animateTo(
+  //       0, // Since list is reversed, 0 is the end
+  //       duration: const Duration(milliseconds: 300),
+  //       curve: Curves.easeOut,
+  //     );
+  //   }
+  // }
 
   Future<void> notifyTyping() async {
     final chatService = ref.read(chatHubServiceProvider);

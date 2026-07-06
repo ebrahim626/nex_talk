@@ -113,7 +113,6 @@ class DirectChatScreen extends ConsumerWidget {
                   return const Center(child: Text("Say hello 👋"));
                 }
                 return ListView.builder(
-                  controller: notifier.scrollController,
                   reverse: true,
                   itemCount: chats.length,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -234,10 +233,7 @@ class DirectChatScreen extends ConsumerWidget {
                 18.pw,
                 InkWell(
                   onTap: () {
-                    final text = notifier.sentText.text;
-                    if (text.trim().isEmpty) return;
-                    notifier.sendMessage(text);
-                    notifier.sentText.clear();
+                    notifier.sendMessage();
                   },
                   child: Container(
                     height: 48,
