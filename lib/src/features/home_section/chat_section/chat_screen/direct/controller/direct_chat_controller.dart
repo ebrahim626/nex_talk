@@ -20,11 +20,15 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
   // final ScrollController scrollController = ScrollController();
 
   List<DirectChatModel>? chats;
+  String? _currentUserId;
 
   @override
   FutureOr<List<DirectChatModel>> build(String peerId) async {
     // 1. Subscribe to the live socket stream FIRST, before the REST fetch
     final chatService = ref.read(chatHubServiceProvider);
+    final store = ref.read(cacheServiceProvider);
+    _currentUserId = await store.userId; // 👈 resolved once, reused synchronously below
+
     final messageSub = chatService.onDirectMessage.listen((data) {
       _handleIncomingMessage(peerId, data);
     });
@@ -74,11 +78,14 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
 
   void _handleIncomingMessage(String peerId, Map<String, dynamic> data) {
     final message = DirectChatModel.fromJson(data);
-    final belongsHere = message.senderId == peerId  || message.recipientId == peerId;;
+
+    if (message.senderId == _currentUserId) return;
+
+    final belongsHere = message.senderId == peerId  || message.recipientId == peerId;
     if (!belongsHere) return;
 
     final current = state.value ?? [];
-    state = AsyncData([...current,message]);
+    state = AsyncData([message,...current]);
   }
   
   Future<void> sendMessage() async {
