@@ -17,6 +17,8 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
   bool isTyping = false;
   bool get isPeerTyping => isTyping;
   TextEditingController sentText = TextEditingController();
+  // bool isOnline = false;
+  // bool get isUserOnline => isOnline;
   // final ScrollController scrollController = ScrollController();
 
   List<DirectChatModel>? chats;
@@ -32,6 +34,26 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     final messageSub = chatService.onDirectMessage.listen((data) {
       _handleIncomingMessage(peerId, data);
     });
+
+    // final onlineSub = chatService.onUserOnline.listen((userId) {
+    //   log("ONLINE EVENT: $userId");
+    //   log("PEER ID: $peerId");
+    //
+    //   if (userId == peerId) {
+    //     log("MATCHED!");
+    //     isOnline = true;
+    //     ref.notifyListeners();
+    //   }
+    // });
+    //
+    // final offlineSub = chatService.onUserOffline.listen((userId) {
+    //   log("OFFLINE EVENT: $userId");
+    //   if (userId == peerId) {
+    //     isOnline = false;
+    //     ref.notifyListeners();
+    //   }
+    // });
+
     final typingSub = chatService.onTyping.listen((senderId) {
       if (senderId == peerId) {
         isTyping = true;
@@ -47,6 +69,8 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     ref.onDispose(() {
       messageSub.cancel();
       typingSub.cancel();
+      // onlineSub.cancel();
+      // offlineSub.cancel();
     });
 
     return fetchDirectChat(peerId);

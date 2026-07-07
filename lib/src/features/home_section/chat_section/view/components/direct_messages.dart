@@ -1,9 +1,7 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/core/service/text_formatter.dart';
 import 'package:next_talk/src/core/service/time_formatter.dart';
@@ -14,6 +12,7 @@ import '../../../../../core/utils/theme/theme.dart';
 import '../../../../common/view/divider/app_divider.dart';
 import '../../chat_summary_model/response/chat_summary_model.dart';
 import '../../controller/all_chats_controller.dart';
+
 
 class DirectMessages extends ConsumerWidget {
   const DirectMessages({super.key, required this.userId});
@@ -66,7 +65,7 @@ class _DirectMessageTile extends StatelessWidget {
       onTap: () {
         context.push(
           AppRoutes.directChatScreenRoute,
-          extra: chat.userId,
+          extra: chat,
         );
         log("sender UserID : ${chat.userId}");
       },
@@ -77,13 +76,27 @@ class _DirectMessageTile extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(color: containerColor, width: 2),
             ),
-            child: CircleAvatar(
-              radius: 24,
-              backgroundColor: containerColor2,
-              child: Text(
-                TextFormatter.avatarText(chat.username),
-                style: context.text.bodyMedium?.copyWith(color: secondaryColor),
-              ),
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  child: Text(TextFormatter.avatarText(chat.username)),
+                ),
+
+                Positioned(
+                  right: 2,
+                  bottom: 2,
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color:  Colors.grey,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           10.pw,

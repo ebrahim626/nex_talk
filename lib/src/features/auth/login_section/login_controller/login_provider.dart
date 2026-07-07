@@ -131,7 +131,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
         store.setUserId(userInfo?.userId ?? "");
         store.setUserName(userInfo?.username ?? "");
         log("Stored user id : ${userInfo?.userId}");
-        store.setBearerToken(userInfo?.token ?? "");
+        await store.setBearerToken(userInfo?.token ?? "");
         ref.invalidate(isLoggedInProvider);
 
         // 👈 establish the socket connection BEFORE navigating in
@@ -187,7 +187,7 @@ class LoginProvider extends AutoDisposeAsyncNotifier<void> {
           store.setUserId(userInfo?.userId ?? "");
           store.setUserName(userInfo?.username ?? "");
           log("Stored user id : ${userInfo?.userId}");
-          store.setBearerToken(userInfo?.token ?? "");
+          await store.setBearerToken(userInfo?.token ?? "");
           ref.invalidate(isLoggedInProvider);
 
           // 👈 establish the socket connection BEFORE navigating in

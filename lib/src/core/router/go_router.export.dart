@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/features/auth/login_section/view/login_screen.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/view/direct_chat_screen.dart';
+import 'package:next_talk/src/features/home_section/chat_section/chat_summary_model/response/chat_summary_model.dart';
 import 'package:next_talk/src/features/profile/view/profile_screen.dart';
 import 'package:next_talk/src/shared/bottom_nev_bar/bottom_nev_bar.dart';
 

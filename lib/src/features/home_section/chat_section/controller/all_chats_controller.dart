@@ -16,6 +16,8 @@ final allChatProvider = AllChatProviderNotifier(AllChatProvider.new);
 class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, String> {
   int selectedTabBar = 0;
   String userId = "";
+  final Set<String> _onlineUsers = {};
+  bool isUserOnline(String userId) => _onlineUsers.contains(userId);
 
   @override
   FutureOr<List<dynamic>> build(arg) async {
@@ -27,9 +29,39 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
       _handleIncomingMessage(message);
     });
 
+    final onlineSub = chatService.onUserOnline.listen((userId) {
+      log("ONLINE: $userId");
+
+      _onlineUsers.add(userId);
+
+      ref.notifyListeners();
+    });
+
+    final offlineSub = chatService.onUserOffline.listen((userId) {
+      log("OFFLINE: $userId");
+
+      _onlineUsers.remove(userId);
+
+      ref.notifyListeners();
+    });
+
+    final onlineUsersSub = chatService.onOnlineUsers.listen((users) {
+      _onlineUsers
+        ..clear()
+        ..addAll(users);
+
+      ref.notifyListeners();
+    });
+
     // 2. Always cancel the subscription when this provider is disposed —
     //    otherwise you leak a listener every time this rebuilds
-    ref.onDispose(subscription.cancel);
+    ref.onDispose(() {
+      subscription.cancel();
+      onlineSub.cancel();
+      offlineSub.cancel();
+      onlineUsersSub.cancel();
+    }
+    );
 
     // 3. Fetch the initial snapshot from REST, as you already do
     return _fetchAllChats();
