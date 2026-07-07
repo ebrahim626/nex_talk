@@ -36,7 +36,8 @@ class DirectMessages extends ConsumerWidget {
             shrinkWrap: true,
             itemBuilder: (context, index) {
               final chat = chats[index];
-              return _DirectMessageTile(chat: chat);
+              final isOnline = notifier.isUserOnline(chat.userId);
+              return _DirectMessageTile(chat: chat,isOnline: isOnline,);
             },
             separatorBuilder: (context, index) =>
                 AppDivider(height: 36, color: containerColor2),
@@ -54,9 +55,10 @@ class DirectMessages extends ConsumerWidget {
 }
 
 class _DirectMessageTile extends StatelessWidget {
-  const _DirectMessageTile({required this.chat});
+  const _DirectMessageTile({required this.chat, required this.isOnline});
 
   final ChatSummary chat;
+  final bool isOnline;
   
 
   @override
@@ -90,7 +92,7 @@ class _DirectMessageTile extends StatelessWidget {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      color:  Colors.grey,
+                      color: isOnline ? Colors.green : Colors.grey,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),

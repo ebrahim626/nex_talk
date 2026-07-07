@@ -45,13 +45,13 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
       ref.notifyListeners();
     });
 
-    final onlineUsersSub = chatService.onOnlineUsers.listen((users) {
-      _onlineUsers
-        ..clear()
-        ..addAll(users);
-
-      ref.notifyListeners();
-    });
+    // final onlineUsersSub = chatService.onOnlineUsers.listen((users) {
+    //   _onlineUsers
+    //     ..clear()
+    //     ..addAll(users);
+    //
+    //   ref.notifyListeners();
+    // });
 
     // 2. Always cancel the subscription when this provider is disposed —
     //    otherwise you leak a listener every time this rebuilds
@@ -59,7 +59,7 @@ class AllChatProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>, Stri
       subscription.cancel();
       onlineSub.cancel();
       offlineSub.cancel();
-      onlineUsersSub.cancel();
+      // onlineUsersSub.cancel();
     }
     );
 
