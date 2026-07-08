@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/database/hive_storage.dart';
+import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/model/response/chat_model.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/response/direct_chat_repository.dart';
+import '../../../../../../core/network/signalr/controller/chat_connection_provider.dart';
 import '../../../../../../core/network/signalr/repository/chat_hub_repository.dart';
 import '../../../../../../shared/toast/toast.dart';
 
@@ -74,6 +77,32 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     });
 
     return fetchDirectChat(peerId);
+  }
+
+  Future<void> logout(BuildContext context) async {
+    // 1. Disconnect the live socket FIRST, before touching anything else —
+    //    this is the step that was completely missing.
+    final chatService = ref.read(chatHubServiceProvider);
+    try {
+      await chatService.disconnect();
+      log("chatService disconnected");
+    } catch (e) {
+      log("Error login out : $e");
+    }
+
+    // 2. Clear persisted auth state
+    final cacheService = ref.read(cacheServiceProvider);
+    await cacheService.clearAuthTokens();
+
+    // 3. Invalidate every provider that holds session-scoped state, so the
+    //    next login rebuilds them fresh instead of reusing stale instances.
+    ref.invalidate(chatConnectionProvider);
+    ref.invalidate(chatHubServiceProvider);
+    ref.invalidate(isLoggedInProvider);
+
+    if (!context.mounted) return;
+
+    context.push(AppRoutes.splashScreenRoute);
   }
 
   Future<List<DirectChatModel>> fetchDirectChat(String userId) async {

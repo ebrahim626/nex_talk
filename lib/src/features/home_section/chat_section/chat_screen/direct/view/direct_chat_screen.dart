@@ -74,10 +74,8 @@ class DirectChatScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InkWell(
-                      onTap: () async {
-                        ref.watch(cacheServiceProvider);
-                        await ref.read(cacheServiceProvider).clearAuthTokens();
-                        context.push(AppRoutes.splashScreenRoute);
+                      onTap: () {
+                        notifier.logout(context);
                       },
                       child: Text(
                         chat.username,
