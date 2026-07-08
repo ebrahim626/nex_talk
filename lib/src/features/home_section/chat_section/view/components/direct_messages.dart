@@ -93,7 +93,7 @@ class _DirectMessageTile extends StatelessWidget {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: isOnline ? Colors.green : Colors.grey,
+                      color: isOnline ? successColor : Colors.grey,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
@@ -114,10 +114,10 @@ class _DirectMessageTile extends StatelessWidget {
                   style: context.text.titleSmall,
                 ),
                 Text(
-                  chat.lastMessage,
+                  chat.lastMessage == "string" ? "New conversation" : chat.lastMessage,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.text.bodySmall,
+                  style: context.text.bodySmall?.copyWith(color: chat.lastMessage == "string" ? primaryColor : null),
                 ),
               ],
             ),

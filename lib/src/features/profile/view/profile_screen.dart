@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
+import 'package:next_talk/src/features/profile/controller/profile_controller.dart';
 import '../../../core/utils/extensions/context.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -12,6 +13,10 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    ref.watch(profileProvider);
+    final notifier = ref.read(profileProvider.notifier);
+
     return CustomScaffold(
       appBar: AppBar(
         bottom: PreferredSize(preferredSize: Size(0, 8), child: SizedBox()),
@@ -36,7 +41,17 @@ class ProfileScreen extends ConsumerWidget {
       ),
       backGroundColor: backgroundColor,
       body: Column(
-        children: [],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: InkWell(
+              onTap: () {
+                notifier.logout(context);
+              },
+              child: Text("Log Out"),
+            ),
+          ),
+        ],
       ),
     );
   }

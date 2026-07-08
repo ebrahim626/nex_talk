@@ -74,22 +74,17 @@ class DirectChatScreen extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        notifier.logout(context);
-                      },
-                      child: Text(
-                        chat.username,
-                        style: context.text.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+                    Text(
+                      chat.username,
+                      style: context.text.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
 
                     Row(
                       children: [
                         CircleAvatar(
-                          maxRadius: 7,
+                          maxRadius: 5,
                           backgroundColor: isOnline ? successColor : Colors.grey,
                         ),
                         6.pw,
