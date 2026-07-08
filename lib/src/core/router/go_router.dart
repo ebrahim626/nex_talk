@@ -30,8 +30,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.directChatScreenRoute,
         name: DirectChatScreen.name,
-        builder: (context, state) =>
-            DirectChatScreen(chat: state.extra as ChatSummary),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+          return DirectChatScreen(
+            chat: extra["chat"] as ChatSummary,
+            isOnline: extra["isOnline"] as bool,
+          );
+        }
       ),
 
       GoRoute(

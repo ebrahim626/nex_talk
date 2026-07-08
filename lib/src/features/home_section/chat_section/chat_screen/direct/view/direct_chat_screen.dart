@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/core/service/text_formatter.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/controller/direct_chat_controller.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_summary_model/response/chat_summary_model.dart';
-import '../../../../../../core/database/hive_storage.dart';
 import '../../../../../../core/utils/extensions/context.dart';
 import '../../../../../../core/utils/extensions/gap.dart';
 import '../../../view/components/current_user_id_provider.dart';
 
 class DirectChatScreen extends ConsumerWidget {
-  const DirectChatScreen({super.key, required this.chat});
+  const DirectChatScreen({super.key, required this.chat, required this.isOnline});
 
   final ChatSummary chat;
+  final bool isOnline;
 
   static const String name = "direct_chat-screen";
 
@@ -89,14 +88,14 @@ class DirectChatScreen extends ConsumerWidget {
                       children: [
                         CircleAvatar(
                           maxRadius: 7,
-                          backgroundColor: successColor,
+                          backgroundColor: isOnline ? successColor : Colors.grey,
                         ),
                         6.pw,
                         Text(
-                          "Online",
+                          isOnline ? "Online" : "Offline",
                           style: context.text.titleSmall?.copyWith(
                             fontWeight: FontWeight.w500,
-                            color: successColor,
+                            color: isOnline ? successColor : Colors.grey,
                           ),
                         ),
                       ],

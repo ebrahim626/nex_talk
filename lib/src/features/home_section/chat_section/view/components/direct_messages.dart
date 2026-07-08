@@ -67,7 +67,7 @@ class _DirectMessageTile extends StatelessWidget {
       onTap: () {
         context.push(
           AppRoutes.directChatScreenRoute,
-          extra: chat,
+          extra: {'chat': chat, 'isOnline': isOnline},
         );
         log("sender UserID : ${chat.userId}");
       },
