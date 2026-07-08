@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/service/text_formatter.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
+import 'package:next_talk/src/features/commom_providers/online_users_provider.dart';
 import 'package:next_talk/src/features/common/view/custom_widgets/custom_scaffold.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/controller/direct_chat_controller.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_summary_model/response/chat_summary_model.dart';
@@ -11,10 +12,9 @@ import '../../../../../../core/utils/extensions/gap.dart';
 import '../../../view/components/current_user_id_provider.dart';
 
 class DirectChatScreen extends ConsumerWidget {
-  const DirectChatScreen({super.key, required this.chat, required this.isOnline});
+  const DirectChatScreen({super.key, required this.chat});
 
   final ChatSummary chat;
-  final bool isOnline;
 
   static const String name = "direct_chat-screen";
 
@@ -23,6 +23,8 @@ class DirectChatScreen extends ConsumerWidget {
     final chatsAsync = ref.watch(directChatProvider(chat.userId));
     final notifier = ref.read(directChatProvider(chat.userId).notifier);
     final currentUserId = ref.watch(currentUserIdProvider);
+    final onlineUsers = ref.watch(onlineUsersProvider);
+    final isOnline = onlineUsers.contains(chat.userId);
 
     return CustomScaffold(
       backGroundColor: backgroundColor,

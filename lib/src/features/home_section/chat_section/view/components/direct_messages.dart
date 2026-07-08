@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/core/service/text_formatter.dart';
 import 'package:next_talk/src/core/service/time_formatter.dart';
+import 'package:next_talk/src/features/commom_providers/online_users_provider.dart';
 import 'package:next_talk/src/features/home_section/chat_section/view/components/shimmer/direct_message_shimmer.dart';
 import '../../../../../core/utils/extensions/context.dart';
 import '../../../../../core/utils/extensions/gap.dart';
@@ -23,6 +24,7 @@ class DirectMessages extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final chatsAsync = ref.watch(allChatProvider(userId));
     final notifier = ref.watch(allChatProvider(userId).notifier);
+    final onlineUsers = ref.watch(onlineUsersProvider); // 👈 watch, not read
 
     return chatsAsync.when(
       data: (chats) {
@@ -36,7 +38,7 @@ class DirectMessages extends ConsumerWidget {
             shrinkWrap: true,
             itemBuilder: (context, index) {
               final chat = chats[index];
-              final isOnline = notifier.isUserOnline(chat.userId);
+              final isOnline = onlineUsers.contains(chat.userId); // 👈
               return _DirectMessageTile(chat: chat,isOnline: isOnline,);
             },
             separatorBuilder: (context, index) =>
@@ -66,8 +68,7 @@ class _DirectMessageTile extends StatelessWidget {
     return InkWell(
       onTap: () {
         context.push(
-          AppRoutes.directChatScreenRoute,
-          extra: {'chat': chat, 'isOnline': isOnline},
+          AppRoutes.directChatScreenRoute,extra: chat
         );
         log("sender UserID : ${chat.userId}");
       },

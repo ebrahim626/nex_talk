@@ -20,8 +20,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
   bool isTyping = false;
   bool get isPeerTyping => isTyping;
   TextEditingController sentText = TextEditingController();
-  // bool isOnline = false;
-  // bool get isUserOnline => isOnline;
+
   // final ScrollController scrollController = ScrollController();
 
   List<DirectChatModel>? chats;
