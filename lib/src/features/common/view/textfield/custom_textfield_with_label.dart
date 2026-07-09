@@ -205,7 +205,7 @@ class _CustomTextFieldWithLabelState extends State<CustomTextFieldWithLabel> {
                 widget.validator ??
                 (v) {
                   // Skip validation if field is not marked with '*' (not required)
-                  if (widget.isRequired != '*') {
+                  if (widget.isRequired != ' *') {
                     return null;
                   }
 
