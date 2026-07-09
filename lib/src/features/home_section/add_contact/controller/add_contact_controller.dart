@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/features/home_section/add_contact/repository/add_contact_repository.dart';
+import 'package:next_talk/src/features/home_section/chat_section/controller/all_chats_controller.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
 
 typedef AddContactProviderNotifier = AutoDisposeAsyncNotifierProvider<AddContactProvider, void>;
@@ -23,6 +25,7 @@ class AddContactProvider extends AutoDisposeAsyncNotifier {
 
   Future<void> addContact(BuildContext context) async {
     try{
+      EasyLoading.show();
       if (!formKey.currentState!.validate()) {
         return;
       }
@@ -34,6 +37,9 @@ class AddContactProvider extends AutoDisposeAsyncNotifier {
         FlashCard.showSuccess(
           message: "New contact added successfully",
         );
+        userNameController.clear();
+        messageController.clear();
+        ref.invalidate(allChatProvider);
         context.pop();
       }else{
         log("error while adding new contact : ${response.data["message"]}");
@@ -43,6 +49,8 @@ class AddContactProvider extends AutoDisposeAsyncNotifier {
     }catch(e) {
       log("Error adding new user : $e");
       FlashCard.showError(errorMessage: "Failed to add contact");
+    }finally{
+      EasyLoading.dismiss();
     }
   }
 
