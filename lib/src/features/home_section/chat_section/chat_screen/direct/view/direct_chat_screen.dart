@@ -20,8 +20,8 @@ class DirectChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatsAsync = ref.watch(directChatProvider(chat.userId));
-    final notifier = ref.read(directChatProvider(chat.userId).notifier);
+    final chatsAsync = ref.watch(directChatProvider(chat));
+    final notifier = ref.read(directChatProvider(chat).notifier);
     final currentUserId = ref.watch(currentUserIdProvider);
     final onlineUsers = ref.watch(onlineUsersProvider);
     final isOnline = onlineUsers.contains(chat.userId);

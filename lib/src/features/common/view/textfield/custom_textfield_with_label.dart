@@ -121,13 +121,13 @@ class _CustomTextFieldWithLabelState extends State<CustomTextFieldWithLabel> {
                     color: widget.isRequiredColor ?? Colors.blueGrey,
                   ),
                 ),
-              // if (widget.isRequired != null)
-              //   Text(
-              //     widget.isRequired!,
-              //     style: context.text.titleSmall!.copyWith(
-              //       color: widget.isRequiredColor ?? Colors.red,
-              //     ),
-              //   ),
+              if (widget.isRequired != null)
+                Text(
+                  widget.isRequired!,
+                  style: context.text.titleSmall!.copyWith(
+                    color: widget.isRequiredColor ?? Colors.red,
+                  ),
+                ),
             ],
           ),
 

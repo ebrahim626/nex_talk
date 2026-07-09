@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
+import 'package:next_talk/src/features/home_section/add_contact/controller/add_contact_controller.dart';
 
 import '../../../../core/utils/extensions/gap.dart';
 import '../../../../core/utils/theme/theme.dart';
@@ -7,7 +9,7 @@ import '../../../common/view/bottom_sheet/app_bottom_sheet.dart';
 import '../../../common/view/button/app_button.dart';
 import '../../../common/view/textfield/custom_textfield_with_label.dart';
 
-class AddContactBottomSheet extends StatelessWidget {
+class AddContactBottomSheet extends ConsumerWidget {
   const AddContactBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
@@ -16,6 +18,7 @@ class AddContactBottomSheet extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (BuildContext context) {
         return Material(
           color: bottomSheetColor,
@@ -36,40 +39,45 @@ class AddContactBottomSheet extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context,) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    ref.watch(addContactProvider);
+    final notifier = ref.read(addContactProvider.notifier);
 
     return AppBottomSheetWidget(
       title: "Add Contact",
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTextFieldWithLabel(
-            isFillColor: true,
-            fillColor: containerColor,
-            controller: TextEditingController(),
-            label: "USER ID",
-            hintText: "User id...",
-            isRequired: "*",
-          ),
-          12.ph,
-          CustomTextFieldWithLabel(
-            isFillColor: true,
-            fillColor: containerColor,
-            controller: TextEditingController(),
-            label: 'OR SEARCH BY NAME',
-            hintText: "Search Users...",
-            isRequired: "*",
-            keyboardType: TextInputType.visiblePassword,
-          ),
-          30.ph,
+      child: Form(
+        key: notifier.formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomTextFieldWithLabel(
+              isFillColor: true,
+              fillColor: containerColor,
+              controller: notifier.userIdController,
+              label: "USER NAME",
+              hintText: "User name...",
+              isRequired: " *",
+            ),
+            12.ph,
+            CustomTextFieldWithLabel(
+              isFillColor: true,
+              fillColor: containerColor,
+              controller: notifier.messageController,
+              label: 'SENT MESSAGE',
+              hintText: "Type message...",
+              keyboardType: TextInputType.visiblePassword,
+            ),
+            30.ph,
 
-          AppButton(
-            borderRadius: 8,
-            color: primaryColor,
-            onPressed: () {},
-            child: Text('Start Chat', style: context.text.titleMedium,),
-          ),
-        ],
+            AppButton(
+              borderRadius: 8,
+              color: primaryColor,
+              onPressed: () {},
+              child: Text('Start Chat', style: context.text.titleMedium,),
+            ),
+            20.ph,
+          ],
+        ),
       ),
     );
   }

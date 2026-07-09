@@ -11,6 +11,8 @@ class ApiEndpoints {
   static const String getAllChatEndpoint = '/api/chat/conversations';
   static const String getAllGroupChatEndpoint = '/api/Group';
   static String getChatEndpoint({required String userId}) => '/api/chat/direct/$userId';
+  static const String addNewContactEndpoint = "/api/chat/direct";
+
 
   static const String chatHubPath = '/hubs/chat';
 }

@@ -2,21 +2,19 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/core/database/hive_storage.dart';
-import 'package:next_talk/src/core/router/app_routes.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/model/response/chat_model.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/response/direct_chat_repository.dart';
-import '../../../../../../core/network/signalr/controller/chat_connection_provider.dart';
 import '../../../../../../core/network/signalr/repository/chat_hub_repository.dart';
 import '../../../../../../shared/toast/toast.dart';
+import '../../../chat_summary_model/response/chat_summary_model.dart';
 
 typedef DirectChatProviderNotifier =
-    AutoDisposeAsyncNotifierProviderFamily<DirectChatProvider, List<DirectChatModel>, String>;
+    AutoDisposeAsyncNotifierProviderFamily<DirectChatProvider, List<DirectChatModel>, ChatSummary>;
 
 final directChatProvider = DirectChatProviderNotifier(DirectChatProvider.new);
 
-class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatModel>, String> {
+class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatModel>, ChatSummary> {
   bool isTyping = false;
   bool get isPeerTyping => isTyping;
   TextEditingController sentText = TextEditingController();
@@ -24,21 +22,21 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
   // final ScrollController scrollController = ScrollController();
 
   List<DirectChatModel>? chats;
-  String? _currentUserId;
+  String? _currentUserName;
 
   @override
-  FutureOr<List<DirectChatModel>> build(String peerId) async {
+  FutureOr<List<DirectChatModel>> build(ChatSummary chat) async {
     // 1. Subscribe to the live socket stream FIRST, before the REST fetch
     final chatService = ref.read(chatHubServiceProvider);
     final store = ref.read(cacheServiceProvider);
-    _currentUserId = await store.userId; // 👈 resolved once, reused synchronously below
+    _currentUserName = await store.userName; // 👈 resolved once, reused synchronously below
 
     final messageSub = chatService.onDirectMessage.listen((data) {
-      _handleIncomingMessage(peerId, data);
+      _handleIncomingMessage(chat.userId, data);
     });
 
     final typingSub = chatService.onTyping.listen((senderId) {
-      if (senderId == peerId) {
+      if (senderId == chat.userId) {
         isTyping = true;
         ref.notifyListeners();
         // auto-clear after a short window since there's no explicit "stopped typing" event
@@ -56,7 +54,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
       // offlineSub.cancel();
     });
 
-    return fetchDirectChat(peerId);
+    return fetchDirectChat(chat.userId);
   }
 
   Future<List<DirectChatModel>> fetchDirectChat(String userId) async {
@@ -86,7 +84,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
   void _handleIncomingMessage(String peerId, Map<String, dynamic> data) {
     final message = DirectChatModel.fromJson(data);
 
-    if (message.senderId == _currentUserId) return;
+    if (message.senderUsername == _currentUserName) return;
 
     final belongsHere = message.senderId == peerId  || message.recipientId == peerId;
     if (!belongsHere) return;
@@ -107,7 +105,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
 
     final chatService = ref.read(chatHubServiceProvider);
     final dto = {
-      'recipientId': arg,
+      'recipientUsername': arg.username,
       'content': sentText.text.trim(),
     };
     // optimistic UI: show the message immediately, before server confirms
@@ -119,7 +117,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
       isRead: false,
       senderId: currentUserId,
       senderUsername: senderUserName,
-      recipientId: arg,
+      recipientId: arg.userId,
     );
 
     sentText.clear();
@@ -149,7 +147,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
 
   Future<void> notifyTyping() async {
     final chatService = ref.read(chatHubServiceProvider);
-    await chatService.typingDirect(arg);
+    await chatService.typingDirect(arg.userId);
   }
 
 }
