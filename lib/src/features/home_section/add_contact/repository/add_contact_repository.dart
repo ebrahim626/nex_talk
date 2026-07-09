@@ -11,14 +11,14 @@ class AddContactRepository {
 
   AddContactRepository({required this.apiClient});
 
-  Future<ApiResponse<dynamic>> addNewConversation(String userId, String message) async {
+  Future<ApiResponse<dynamic>> addNewConversation(String userId, String? message) async {
     return await apiClient.post(
       apiType: APIType.private,
       tokenType: TokenType.bearerToken,
       path: ApiEndpoints.addNewContactEndpoint,
       data: {
-        "recipientId": userId,
-        "content": message,
+        "RecipientUsername": userId,
+        "content": message ?? "",
       }
     );
   }

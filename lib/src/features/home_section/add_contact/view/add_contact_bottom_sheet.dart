@@ -53,7 +53,7 @@ class AddContactBottomSheet extends ConsumerWidget {
             CustomTextFieldWithLabel(
               isFillColor: true,
               fillColor: containerColor,
-              controller: notifier.userIdController,
+              controller: notifier.userNameController,
               label: "USER NAME",
               hintText: "User name...",
               isRequired: " *",
@@ -65,14 +65,16 @@ class AddContactBottomSheet extends ConsumerWidget {
               controller: notifier.messageController,
               label: 'SENT MESSAGE',
               hintText: "Type message...",
-              keyboardType: TextInputType.visiblePassword,
+              // keyboardType: TextInputType.visiblePassword,
             ),
             30.ph,
 
             AppButton(
               borderRadius: 8,
               color: primaryColor,
-              onPressed: () {},
+              onPressed: () {
+                notifier.addContact(context);
+              },
               child: Text('Start Chat', style: context.text.titleMedium,),
             ),
             20.ph,

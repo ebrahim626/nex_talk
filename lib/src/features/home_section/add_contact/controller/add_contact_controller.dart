@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:next_talk/src/features/home_section/add_contact/repository/add_contact_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
 
@@ -11,7 +12,7 @@ final addContactProvider = AddContactProviderNotifier(AddContactProvider.new);
 
 class AddContactProvider extends AutoDisposeAsyncNotifier {
 
-  TextEditingController userIdController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   TextEditingController messageController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -20,19 +21,23 @@ class AddContactProvider extends AutoDisposeAsyncNotifier {
 
   }
 
-  Future<void> addContact() async {
+  Future<void> addContact(BuildContext context) async {
     try{
       if (!formKey.currentState!.validate()) {
         return;
       }
 
       final repo = ref.read(addContactRepository);
-      final response = await repo.addNewConversation(userIdController.text, messageController.text);
+      final response = await repo.addNewConversation(userNameController.text, messageController.text);
 
       if(response.statusCode == 200) {
         FlashCard.showSuccess(
           message: "New contact added successfully",
         );
+        context.pop();
+      }else{
+        log("error while adding new contact : ${response.data["message"]}");
+        FlashCard.showError(errorMessage: "${response.data["message"]}");
       }
 
     }catch(e) {

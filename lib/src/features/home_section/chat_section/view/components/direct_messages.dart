@@ -114,10 +114,10 @@ class _DirectMessageTile extends StatelessWidget {
                   style: context.text.titleSmall,
                 ),
                 Text(
-                  chat.lastMessage == "string" ? "New conversation" : chat.lastMessage,
+                  chat.lastMessage == "" ? "New conversation" : chat.lastMessage,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.text.bodySmall?.copyWith(color: chat.lastMessage == "string" ? primaryColor : null),
+                  style: context.text.bodySmall?.copyWith(color: chat.lastMessage == "" ? primaryColor : null),
                 ),
               ],
             ),

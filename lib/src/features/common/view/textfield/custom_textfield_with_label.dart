@@ -173,7 +173,7 @@ class _CustomTextFieldWithLabelState extends State<CustomTextFieldWithLabel> {
                             icon: _obscureText
                                 ? HugeIcons.strokeRoundedViewOff
                                 : HugeIcons.strokeRoundedAiView,
-                            color: const Color(0xFF272B35),
+                            color: titleTextColor,
                           ),
                           onPressed: _toggleVisibility,
                         )
