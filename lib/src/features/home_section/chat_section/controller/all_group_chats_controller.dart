@@ -25,7 +25,10 @@ class AllGroupChatsProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>
 
     // 2. Always cancel the subscription when this provider is disposed —
     //    otherwise you leak a listener every time this rebuilds
-    ref.onDispose(subscription.cancel);
+    ref.onDispose(() {
+      subscription.cancel;
+      log("Group disposed");
+    }) ;
 
     // 3. Fetch the initial snapshot from REST, as you already do
     return _fetchGroupChats();
@@ -34,18 +37,18 @@ class AllGroupChatsProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>
   Future<List<dynamic>> _fetchGroupChats() async {
     try {
       final repo = ref.read(allChatRepository);
-      final response = await repo.getAllChat();
+      final response = await repo.getAllGroupChat();
       if (response.statusCode == 200 || response.statusCode == 201) {
-        log("get all chat = ${response.data}");
+        log("get all group chats = ${response.data}");
         final list = (response.data as List<dynamic>? ?? []);
-        return list.map((e) => ChatSummary.fromJson(e as Map<String, dynamic>)).toList();
+        return list.map((e) => GroupChatModel.fromJson(e as Map<String, dynamic>)).toList();
       } else {
-        log("error while getting all chats : ${response.error}");
-        FlashCard.showError(errorMessage: "Something went wrong to get all chats");
+        log("error while getting group chats : ${response.error}");
+        FlashCard.showError(errorMessage: "Something went wrong to get group chats");
         return [];
       }
     } catch (e) {
-      log('error getting all chats : $e');
+      log('error getting group chats : $e');
       return [];
     } finally {
     }
@@ -71,12 +74,11 @@ class AllGroupChatsProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>
       ));
     } else {
       // new conversation, add to top
-      updated.insert(0, GroupSummary.fromJson({
-        'userId': senderId,
-        'username': message['senderUsername'] ?? 'Unknown',
-        'lastMessage': message['content'],
-        'lastMessageAt': message['timestamp'],
-        'unreadCount': 1,
+      updated.insert(0, GroupChatModel.fromJson({
+        'id': senderId,
+        'name': message['senderUsername'] ?? 'Unknown',
+        'memberCount': message['content'],
+        'createdAt': message['timestamp'],
       }));
     }
 

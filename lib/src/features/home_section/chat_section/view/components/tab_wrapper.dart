@@ -112,7 +112,7 @@ class _TabWrapperState extends State<TabWrapper>
               controller: _tabController,
               children: [
                 DirectMessages(userId: widget.userId),
-                const Groups(),
+                Groups(userId: widget.userId,),
               ],
             ),
           ),

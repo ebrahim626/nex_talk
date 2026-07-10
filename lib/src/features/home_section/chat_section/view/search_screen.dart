@@ -11,6 +11,7 @@ import 'package:next_talk/src/features/home_section/add_group/view/add_contact_b
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/extensions/gap.dart';
 import '../controller/all_chats_controller.dart';
+import '../controller/all_group_chats_controller.dart';
 import 'components/current_user_id_provider.dart';
 import 'components/tab_wrapper.dart';
 
@@ -28,6 +29,7 @@ class AllChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(allChatProvider(userId));
+    ref.watch(allGroupChatsProvider(userId));
     final notifier = ref.read(allChatProvider(userId).notifier);
 
 // sync userId globally on first build

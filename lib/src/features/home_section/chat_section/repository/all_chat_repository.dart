@@ -23,7 +23,7 @@ class AllChatRepository {
     return await apiClient.get(
       apiType: APIType.private,
       tokenType: TokenType.bearerToken,
-      path: ApiEndpoints.getAllChatEndpoint,
+      path: ApiEndpoints.getAllGroupChatEndpoint,
     );
   }
 

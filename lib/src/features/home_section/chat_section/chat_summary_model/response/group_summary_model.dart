@@ -1,47 +1,45 @@
-class GroupSummary {
-  final String groupId;
-  final String groupName;
-  final String? avatarUrl;
+class GroupChatModel {
+  final String id;
+  final String name;
   final int memberCount;
-  final String lastMessage;
-  final DateTime lastMessageAt;
-  final int unreadCount;
+  final DateTime createdAt;
 
-  GroupSummary({
-    required this.groupId,
-    required this.groupName,
-    this.avatarUrl,
+  const GroupChatModel({
+    required this.id,
+    required this.name,
     required this.memberCount,
-    required this.lastMessage,
-    required this.lastMessageAt,
-    required this.unreadCount,
+    required this.createdAt,
   });
 
-  factory GroupSummary.fromJson(Map<String, dynamic> json) {
-    return GroupSummary(
-      groupId: json['groupId'] as String? ?? '',
-      groupName: json['groupName'] as String? ?? 'Unknown group',
-      avatarUrl: json['avatarUrl'] as String?,
-      memberCount: json['memberCount'] as int? ?? 0,
-      lastMessage: json['lastMessage'] as String? ?? '',
-      lastMessageAt: DateTime.tryParse(json['lastMessageAt']?.toString() ?? '') ?? DateTime.now(),
-      unreadCount: json['unreadCount'] as int? ?? 0,
+  factory GroupChatModel.fromJson(Map<String, dynamic> json) {
+    return GroupChatModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      memberCount: json['memberCount'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
 
-  GroupSummary copyWith({
-    String? lastMessage,
-    DateTime? lastMessageAt,
-    int? unreadCount,
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'memberCount': memberCount,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
+  GroupChatModel copyWith({
+    String? id,
+    String? name,
+    int? memberCount,
+    DateTime? createdAt,
   }) {
-    return GroupSummary(
-      groupId: groupId,
-      groupName: groupName,
-      avatarUrl: avatarUrl,
-      memberCount: memberCount,
-      lastMessage: lastMessage ?? this.lastMessage,
-      lastMessageAt: lastMessageAt ?? this.lastMessageAt,
-      unreadCount: unreadCount ?? this.unreadCount,
+    return GroupChatModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      memberCount: memberCount ?? this.memberCount,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }
