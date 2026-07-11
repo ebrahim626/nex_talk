@@ -5,8 +5,6 @@ import 'package:next_talk/src/features/home_section/chat_section/chat_summary_mo
 import 'package:next_talk/src/features/home_section/chat_section/repository/all_chat_repository.dart';
 import 'package:next_talk/src/shared/toast/toast.dart';
 import '../../../../core/network/signalr/repository/chat_hub_repository.dart';
-import '../chat_summary_model/response/chat_summary_model.dart';
-import '../view/components/current_user_id_provider.dart';
 
 typedef AllGroupChatsProviderNotifier =
 AutoDisposeAsyncNotifierProviderFamily<AllGroupChatsProvider, List<dynamic>, String>;
@@ -20,6 +18,7 @@ class AllGroupChatsProvider extends AutoDisposeFamilyAsyncNotifier<List<dynamic>
     // 1. Subscribe to the live socket stream FIRST, before the REST fetch
     final chatService = ref.read(chatHubServiceProvider);
     final subscription = chatService.onGroupMessage.listen((message) {
+      log("GROUP EVENT: $message");
       _handleIncomingMessage(message);
     });
 

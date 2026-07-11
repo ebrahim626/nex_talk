@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:next_talk/src/core/utils/extensions/context.dart';
+import 'package:next_talk/src/features/home_section/add_group/controller/add_group_controller.dart';
 
 import '../../../../core/utils/extensions/gap.dart';
 import '../../../../core/utils/theme/theme.dart';
@@ -7,7 +9,7 @@ import '../../../common/view/bottom_sheet/app_bottom_sheet.dart';
 import '../../../common/view/button/app_button.dart';
 import '../../../common/view/textfield/custom_textfield_with_label.dart';
 
-class AddGroupBottomSheet extends StatelessWidget {
+class AddGroupBottomSheet extends ConsumerWidget {
   const AddGroupBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
@@ -16,6 +18,7 @@ class AddGroupBottomSheet extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (BuildContext context) {
         return Material(
           color: bottomSheetColor,
@@ -36,40 +39,45 @@ class AddGroupBottomSheet extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context,) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    ref.watch(addGroupProvider);
+    final notifier = ref.read(addGroupProvider.notifier);
 
     return AppBottomSheetWidget(
       title: "Create Group",
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTextFieldWithLabel(
-            isFillColor: true,
-            fillColor: containerColor,
-            controller: TextEditingController(),
-            label: "Group Name",
-            hintText: "type group name",
-            isRequired: "*",
-          ),
-          12.ph,
-          CustomTextFieldWithLabel(
-            isFillColor: true,
-            fillColor: containerColor,
-            controller: TextEditingController(),
-            label: 'Add Member',
-            hintText: "Search users to add...",
-            isRequired: "*",
-            keyboardType: TextInputType.visiblePassword,
-          ),
-          30.ph,
+      child: Form(
+        key: notifier.formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomTextFieldWithLabel(
+              isFillColor: true,
+              fillColor: containerColor,
+              controller: notifier.groupNameController,
+              label: "Group Name",
+              hintText: "Type group name",
+              isRequired: " *",
+            ),
+            // 12.ph,
+            // CustomTextFieldWithLabel(
+            //   isFillColor: true,
+            //   fillColor: containerColor,
+            //   controller: TextEditingController(),
+            //   label: 'Add Member',
+            //   hintText: "Search users to add...",
+            // ),
+            25.ph,
 
-          AppButton(
-            borderRadius: 8,
-            color: primaryColor,
-            onPressed: () {},
-            child: Text('Create Group', style: context.text.titleMedium,),
-          ),
-        ],
+            AppButton(
+              borderRadius: 8,
+              color: primaryColor,
+              onPressed: () {
+                notifier.addGroup(context);
+              },
+              child: Text('Create Group', style: context.text.titleMedium,),
+            ),
+          ],
+        ),
       ),
     );
   }
