@@ -33,7 +33,7 @@ class AddContactProvider extends AutoDisposeAsyncNotifier {
       final repo = ref.read(addContactRepository);
       final response = await repo.addNewConversation(userNameController.text, messageController.text);
 
-      if(response.statusCode == 200) {
+      if(response.statusCode == 200 || response.statusCode == 201) {
         FlashCard.showSuccess(
           message: "New contact added successfully",
         );
