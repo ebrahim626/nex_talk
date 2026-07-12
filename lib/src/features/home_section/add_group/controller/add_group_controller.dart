@@ -34,7 +34,7 @@ class AddGroupProvider extends AutoDisposeAsyncNotifier {
       final repo = ref.read(addGroupRepository);
       final response = await repo.addNewGroup(groupNameController.text);
 
-      if(response.statusCode == 200) {
+      if(response.statusCode == 200 || response.statusCode == 201) {
         FlashCard.showSuccess(
           message: "New group added successfully",
         );
