@@ -3,8 +3,10 @@ part of '../api_client.export.dart';
 class ApiEndpoints {
 
   ///base url
-  static const String baseUrl = 'https://nextalk-production-9e30.up.railway.app';
+  // static const String baseUrl = 'https://nextalk-production-9e30.up.railway.app';
 
+  //local host
+  static const String baseUrl = 'http://10.0.2.2:5096';
 
   static const String authRegisterEndpoint = '/api/auth/register';
   static const String loginEndpoint = '/api/auth/login';
