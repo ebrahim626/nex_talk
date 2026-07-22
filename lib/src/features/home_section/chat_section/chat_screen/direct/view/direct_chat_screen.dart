@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:next_talk/src/core/service/text_formatter.dart';
 import 'package:next_talk/src/core/utils/theme/theme.dart';
 import 'package:next_talk/src/features/commom_providers/online_users_provider.dart';
@@ -10,6 +11,7 @@ import 'package:next_talk/src/features/home_section/chat_section/chat_summary_mo
 import '../../../../../../core/utils/extensions/context.dart';
 import '../../../../../../core/utils/extensions/gap.dart';
 import '../../../view/components/current_user_id_provider.dart';
+import '../model/response/chat_model.dart';
 
 class DirectChatScreen extends ConsumerWidget {
   const DirectChatScreen({super.key, required this.chat});
@@ -102,23 +104,20 @@ class DirectChatScreen extends ConsumerWidget {
               ],
             ),
           ),
-          Expanded(
-            child: chatsAsync.when(
-              data: (chats) {
-                if (chats.isEmpty) {
-                  return const Center(child: Text("Say hello 👋"));
-                }
-                return ListView.builder(
-                  reverse: true,
-                  itemCount: chats.length,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  itemBuilder: (context, index) {
-                    // reverse: true means index 0 is the bottom (latest) message
-                    // final message = chats[chats.length - 1 - index];
-                    final message = chats[index]; // No need to reverse since we use reverse: true
-                    final isMe = message.senderId == currentUserId;
 
-                    return Align(
+          // 👇 REPLACE the old Expanded(child: chatsAsync.when(...)) with this:
+          Expanded(
+            child: PagingListener<int, DirectChatModel>(
+              controller: notifier.pagingController,
+              builder: (context, state, fetchNextPage) => PagedListView<int, DirectChatModel>(
+                state: state,
+                fetchNextPage: fetchNextPage,
+                reverse: true,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                builderDelegate: PagedChildBuilderDelegate<DirectChatModel>(
+                  itemBuilder: (context, message, index) {
+                    final isMe = message.senderId == currentUserId;
+                    return  Align(
                       alignment: isMe ? Alignment.bottomRight : Alignment.topLeft,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -133,7 +132,9 @@ class DirectChatScreen extends ConsumerWidget {
                                     ? message.senderUsername.substring(0, 1).toUpperCase()
                                     : "?",
                                 style: context.text.bodyMedium?.copyWith(
-                                  color: secondaryColor, fontSize: 14, fontWeight: FontWeight.w400,
+                                  color: secondaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ),
@@ -141,7 +142,8 @@ class DirectChatScreen extends ConsumerWidget {
                           ],
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                               children: [
                                 16.ph,
                                 Container(
@@ -175,12 +177,100 @@ class DirectChatScreen extends ConsumerWidget {
                       ),
                     );
                   },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => const Center(child: Text("Failed to load messages")),
+                  firstPageProgressIndicatorBuilder: (_) =>
+                  const Center(child: CircularProgressIndicator()),
+                  newPageProgressIndicatorBuilder: (_) => const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  noItemsFoundIndicatorBuilder: (_) =>
+                  const Center(child: Text("Say hello 👋")),
+                  firstPageErrorIndicatorBuilder: (_) =>
+                  const Center(child: Text("Failed to load messages")),
+                ),
+              ),
             ),
           ),
+
+          // Expanded(
+          //   child: chatsAsync.when(
+          //     data: (chats) {
+          //       if (chats.isEmpty) {
+          //         return const Center(child: Text("Say hello 👋"));
+          //       }
+          //       return ListView.builder(
+          //         reverse: true,
+          //         itemCount: chats.length,
+          //         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          //         itemBuilder: (context, index) {
+          //           // reverse: true means index 0 is the bottom (latest) message
+          //           // final message = chats[chats.length - 1 - index];
+          //           final message = chats[index]; // No need to reverse since we use reverse: true
+          //           final isMe = message.senderId == currentUserId;
+          //
+          //           return Align(
+          //             alignment: isMe ? Alignment.bottomRight : Alignment.topLeft,
+          //             child: Row(
+          //               mainAxisSize: MainAxisSize.min,
+          //               crossAxisAlignment: CrossAxisAlignment.end,
+          //               children: [
+          //                 if (!isMe) ...[
+          //                   CircleAvatar(
+          //                     radius: 16,
+          //                     backgroundColor: containerColor2,
+          //                     child: Text(
+          //                       message.senderUsername.isNotEmpty
+          //                           ? message.senderUsername.substring(0, 1).toUpperCase()
+          //                           : "?",
+          //                       style: context.text.bodyMedium?.copyWith(
+          //                         color: secondaryColor, fontSize: 14, fontWeight: FontWeight.w400,
+          //                       ),
+          //                     ),
+          //                   ),
+          //                   6.pw,
+          //                 ],
+          //                 Expanded(
+          //                   child: Column(
+          //                     crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          //                     children: [
+          //                       16.ph,
+          //                       Container(
+          //                         padding: const EdgeInsets.all(8),
+          //                         constraints: BoxConstraints(
+          //                           maxWidth: context.width * .7 - (isMe ? 0 : 38),
+          //                         ),
+          //                         decoration: BoxDecoration(
+          //                           color: isMe ? primaryColor : containerColor2,
+          //                           borderRadius: BorderRadius.only(
+          //                             bottomRight: isMe ? Radius.circular(0) : Radius.circular(8),
+          //                             topLeft: Radius.circular(8),
+          //                             bottomLeft: isMe ? Radius.circular(8) : Radius.circular(0),
+          //                             topRight: Radius.circular(8),
+          //                           ),
+          //                         ),
+          //                         child: Text(
+          //                           message.content,
+          //                           style: context.text.titleSmall?.copyWith(fontSize: 14),
+          //                         ),
+          //                       ),
+          //                       2.ph,
+          //                       Text(
+          //                         TimeOfDay.fromDateTime(message.sentAt).format(context),
+          //                         style: context.text.bodySmall?.copyWith(fontSize: 12),
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           );
+          //         },
+          //       );
+          //     },
+          //     loading: () => const Center(child: CircularProgressIndicator()),
+          //     error: (e, _) => const Center(child: Text("Failed to load messages")),
+          //   ),
+          // ),
           if (notifier.isPeerTyping)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

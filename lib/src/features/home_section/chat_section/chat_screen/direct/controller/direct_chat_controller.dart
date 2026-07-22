@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:next_talk/src/core/database/hive_storage.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/model/response/chat_model.dart';
 import 'package:next_talk/src/features/home_section/chat_section/chat_screen/direct/response/direct_chat_repository.dart';
@@ -18,6 +19,11 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
   bool isTyping = false;
   bool get isPeerTyping => isTyping;
   TextEditingController sentText = TextEditingController();
+
+  late final pagingController = PagingController<int, DirectChatModel>(
+    getNextPageKey: (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => fetchDirectChat(pageKey),
+  );
 
   // final ScrollController scrollController = ScrollController();
 
@@ -50,17 +56,16 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     ref.onDispose(() {
       messageSub.cancel();
       typingSub.cancel();
-      // onlineSub.cancel();
-      // offlineSub.cancel();
+      pagingController.dispose();
     });
-
-    return fetchDirectChat(chat.userId);
+    pagingController.fetchNextPage();
+    return [];
   }
 
-  Future<List<DirectChatModel>> fetchDirectChat(String userId) async {
+  Future<List<DirectChatModel>> fetchDirectChat(int pageKey) async {
     try {
       final repo = ref.read(directChatRepository);
-      final response = await repo.getChats(userId);
+      final response = await repo.getChats(arg.userId, pageKey, 3);
       if (response.statusCode == 200 || response.statusCode == 201) {
 
         // Parse the list directly - API returns an array
@@ -81,6 +86,18 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     }
   }
 
+  void _prependMessage(DirectChatModel message) {
+    final state = pagingController.value;
+    final pages = state.pages;
+    if (pages == null || pages.isEmpty) {
+      pagingController.value = state.copyWith(pages: [[message]], keys: [0]);
+      return;
+    }
+    pagingController.value = state.copyWith(
+      pages: [[message, ...pages.first], ...pages.skip(1)],
+    );
+  }
+
   void _handleIncomingMessage(String peerId, Map<String, dynamic> data) {
     final message = DirectChatModel.fromJson(data);
 
@@ -89,10 +106,9 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     final belongsHere = message.senderId == peerId  || message.recipientId == peerId;
     if (!belongsHere) return;
 
-    final current = state.value ?? [];
-    state = AsyncData([message,...current]);
+    _prependMessage(message);
   }
-  
+
   Future<void> sendMessage() async {
     if(sentText.text.trim().isEmpty) return;
     final store = ref.read(cacheServiceProvider);
@@ -110,6 +126,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
     };
     // optimistic UI: show the message immediately, before server confirms
 
+    final optimisticId = DateTime.now().microsecondsSinceEpoch.toString();
     final optimistic = DirectChatModel(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       content: sentText.text.trim(),
@@ -122,8 +139,7 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
 
     sentText.clear();
 
-    final current = state.value ?? [];
-    state = AsyncData([optimistic,...current,]);
+    _prependMessage(optimistic);
 
     try {
       await chatService.sendDirectMessage(dto);
@@ -131,8 +147,17 @@ class DirectChatProvider extends AutoDisposeFamilyAsyncNotifier<List<DirectChatM
       log('failed to send message: $e');
       FlashCard.showError(errorMessage: "Message failed to send");
       // roll back the optimistic entry on failure
-      state = AsyncData(current);
+      _removeMessage(optimisticId);
     }
+  }
+
+  void _removeMessage(String id) {
+    final state = pagingController.value;
+    final pages = state.pages;
+    if (pages == null || pages.isEmpty) return;
+    pagingController.value = state.copyWith(
+      pages: pages.map((page) => page.where((m) => m.id != id).toList()).toList(),
+    );
   }
 
   // void scrollToEnd() {
