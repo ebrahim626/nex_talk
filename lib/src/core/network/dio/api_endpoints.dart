@@ -6,7 +6,7 @@ class ApiEndpoints {
   // static const String baseUrl = 'https://nextalk-production-9e30.up.railway.app';
 
   //local host
-  static const String baseUrl = 'http://10.0.2.2:5096';
+  static const String baseUrl = 'http://192.168.0.103:5096';
 
   static const String authRegisterEndpoint = '/api/auth/register';
   static const String loginEndpoint = '/api/auth/login';
