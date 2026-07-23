@@ -117,6 +117,9 @@ class DirectChatScreen extends ConsumerWidget {
                 builderDelegate: PagedChildBuilderDelegate<DirectChatModel>(
                   itemBuilder: (context, message, index) {
                     final isMe = message.senderId == currentUserId;
+                    if (message.content.trim().isEmpty) {
+                      return const SizedBox.shrink();
+                    }
                     return  Align(
                       alignment: isMe ? Alignment.bottomRight : Alignment.topLeft,
                       child: Row(
