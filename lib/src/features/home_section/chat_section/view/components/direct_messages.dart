@@ -39,7 +39,7 @@ class DirectMessages extends ConsumerWidget {
             itemBuilder: (context, index) {
               final chat = chats[index];
               final isOnline = onlineUsers.contains(chat.userId); // 👈
-              return _DirectMessageTile(chat: chat,isOnline: isOnline,);
+              return _DirectMessageTile(chat: chat,isOnline: isOnline, userId: userId,);
             },
             separatorBuilder: (context, index) =>
                 AppDivider(height: 36, color: containerColor2),
@@ -57,14 +57,16 @@ class DirectMessages extends ConsumerWidget {
 }
 
 class _DirectMessageTile extends StatelessWidget {
-  const _DirectMessageTile({required this.chat, required this.isOnline});
+  const _DirectMessageTile({required this.chat, required this.isOnline, required this.userId});
 
   final ChatSummary chat;
   final bool isOnline;
+  final String userId;
   
 
   @override
   Widget build(BuildContext context) {
+    final isMe = chat.userId == userId;
     return InkWell(
       onTap: () {
         context.push(
@@ -114,7 +116,7 @@ class _DirectMessageTile extends StatelessWidget {
                   style: context.text.titleSmall,
                 ),
                 Text(
-                  chat.lastMessage == "" ? "New conversation" : chat.lastMessage,
+                  chat.lastMessage == "" ? "New conversation" : isMe ? "You : ${chat.lastMessage}" : chat.lastMessage,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.text.bodySmall?.copyWith(color: chat.lastMessage == "" ? primaryColor : null),
