@@ -24,6 +24,7 @@ void main() async {
 
 }
 
+/// EasyLoading configaration 
 void configEasyLoading(BuildContext context) {
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
