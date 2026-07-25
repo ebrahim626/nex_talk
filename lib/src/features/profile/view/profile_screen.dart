@@ -16,7 +16,7 @@ class ProfileScreen extends ConsumerWidget {
 
     ref.watch(profileProvider);
     final notifier = ref.read(profileProvider.notifier);
-    final notifier2 = ref.watch(profileProvider);
+    //final notifier2 = ref.watch(profileProvider);
 
     return CustomScaffold(
       appBar: AppBar(
